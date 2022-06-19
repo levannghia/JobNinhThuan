@@ -8,7 +8,7 @@
     <div class="collapse navbar-collapse" id="navbarCollapse">
         <div class="navbar-nav ms-auto p-4 p-lg-0">
             <a href="/" class="nav-item nav-link active">Home</a>
-            <a href="about.html" class="nav-item nav-link">About</a>
+            <a href="{{route('hoso.index')}}" class="nav-item nav-link">Hồ Sơ</a>
             {{-- <div class="nav-item dropdown">
                 <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Jobs</a>
                 <div class="dropdown-menu rounded-0 m-0">
@@ -17,13 +17,15 @@
                 </div>
             </div> --}}
             <a href="{{route('recruitment.index')}}" class="nav-item nav-link">Tin Tuyển Dụng</a>
-            <a href="contact.html" class="nav-item nav-link">Contact</a>
             @if (auth()->guard('web')->check() && auth()->guard('web')->user()->type == 1)
             <div class="nav-item dropdown">
                 <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">{{auth()->guard('web')->user()->name}}</a>
-                <div class="dropdown-menu rounded-0 m-0">                   
+                <div class="dropdown-menu rounded-0 m-0">   
+                    <a href="{{route('seeker.profile.index.profile.user')}}" class="dropdown-item">Thông tin tài khoản</a>                
                     <a href="{{route('seeker.profile.create.profile')}}" class="dropdown-item">Tạo hồ sơ</a>
                     <a href="{{route('seeker.profile.index.profile')}}" class="dropdown-item">Quản lý hồ sơ</a>
+                    <a href="{{route('seeker.profile.apply')}}" class="dropdown-item">Việc làm đã ứng tuyển</a>
+                    <a href="{{route('seeker.profile.wishlist')}}" class="dropdown-item">Việc làm đã lưu</a>
                     <a href="{{route('seeker.logout')}}" class="dropdown-item">logout</a>
                 </div>
             </div>

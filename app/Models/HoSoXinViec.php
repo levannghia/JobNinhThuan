@@ -19,4 +19,9 @@ class HoSoXinViec extends Model
     {
         return $this->belongsToMany(Province::class,'hosoxinviec_province','hosoxinviec_id','province_matp');
     }
+
+    public function users()
+    {
+        return $this->belongsTo(User::class,'user_id');
+    }
 }

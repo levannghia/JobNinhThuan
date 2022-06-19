@@ -6,8 +6,12 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Employer;
+use Illuminate\Support\Facades\Mail;
+use App\Models\HoSoXinViec;
 use App\Models\Recruitment;
 use Carbon\Carbon;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 
 class RecruitmentController extends Controller
@@ -16,7 +20,7 @@ class RecruitmentController extends Controller
     {
         $category_search = Category::where('search', 1)->where('status', 1)->where('type', '!=', 1)->orderBy('stt', 'ASC')->get();
         $category_noibat = Category::where('noi_bat', 1)->where('status', 1)->where('type', '!=', 1)->orderBy('stt', 'ASC')->get();
-        $recruiment_list = Recruitment::where('status', 1)->orderBy('stt', 'ASC')->paginate(15);
+        $recruiment_list = Recruitment::where('status', 1)->orderBy('stt', 'ASC')->get();
         return view('site.job.index', compact('category_search', 'recruiment_list', 'category_noibat'));
     }
 
@@ -25,33 +29,155 @@ class RecruitmentController extends Controller
         $category_list = Category::with('informations')->where('status', 1)->where('type', 2)->orWhere('type', 0)->orderBy('stt', 'ASC')->get();
         $recruitment = Recruitment::where('slug',$slug)->where('id',$id)->first();
         if($recruitment){
+            $view = array();
             if(auth()->guard('web')->check() && auth()->guard('web')->user()->type == 1){
                 $check_wishlist = DB::table('user_recruitment')->where('recruitment_id',$recruitment->id)->where('user_id',auth()->guard('web')->user()->id)->first();
                 if(!session()->has('viewer') || session('viewer') != $recruitment->id){
                     $recruitment->view = $recruitment->view + 1;
                     $recruitment->save();
                     session(['viewer' => $recruitment->id]);
-                }  
+                }
+
+                $hoso_list = HoSoXinViec::where('user_id',auth()->guard('web')->user()->id)->whereIn('status',[0,1])->get();
+                if(isset($check_wishlist)){
+                    $view = [
+                        'recruitment' => $recruitment,
+                        'check_wishlist' => $check_wishlist,
+                        'category_list' => $category_list,
+                        'hoso_list' => $hoso_list
+                    ];
+                }else{
+                    $view = [
+                        'recruitment' => $recruitment,
+                        'category_list' => $category_list,
+                        'hoso_list' => $hoso_list
+                    ];
+                }
+            }else{
+                $view = [
+                    'recruitment' => $recruitment,
+                    'category_list' => $category_list,
+                ];
+                
             }
-            $employer = Employer::find($recruitment->employer_id);
-            return view('site.job.job_detail',compact('recruitment','employer','check_wishlist','category_list'));
+            return view('site.job.job_detail',$view); 
         }else{
             abort(404);
         }
         
     }
 
+    public function applyForEmail(Request $request, $recruitment_id){
+
+        $rules = [
+            "name" => "required",
+            "email" => "email|required",           
+            'file' => 'required|mimes:jpg,png,jpeg,gif,pdf,doc,docx,xlsx|max:5400'
+        ];
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails()) {
+            return back()->with(["type" => "danger", "flash_message" =>  "Định dạng file không được hỗ trợ"]);
+        }
+
+        $recruitment = Recruitment::find($recruitment_id);
+        $employer_email = $recruitment->Employers->email;
+        $employer_name = $recruitment->Employers->name;
+       
+
+        if ($request->hasFile('file')) {
+            $file = $request->file;
+            $file_name = Str::slug($file->getClientOriginalName(), "-") . "-" . time() . "." . $file->getClientOriginalExtension();
+            $path =  $file->move("upload/file/cv/", $file_name);
+        }
+       
+        $data = array(
+            "name" => $request->name,
+            "content" => $request->content,
+            "email" => $request->email,
+            "portfolio" => $request->portfolio,
+            "path" => $path,
+            "employer_email" => $employer_email,
+            "employer_name" => $employer_name,
+            "title" => config('app.name') . " - Hồ Sơ Ứng Tuyển"
+        );
+        //Gui mail 
+        $send = Mail::send('dashboard.page.email_apply_recruitment', compact('data'), function ($mail) use ($data,$file) {
+            $mail->subject($data['title']);
+            $mail->to($data['employer_email'], $data['employer_name']);
+            $mail->from(config('mail.from.address'), config('mail.from.name'));
+            $mail->attach($data['path'],[
+                'as' => $file->getClientOriginalName(),
+            ]);
+        });
+
+        if(file_exists($path)){
+            unlink($path);
+            return back()->with(["type" => "success", "flash_message" => "Ứng tuyển thành công!"]);
+        }   
+    }
+
+    public function apply(Request $request ,$recruitment_id)
+    {
+        if(auth()->guard('web')->check()){
+            if(auth()->guard('web')->user()->type == 1){
+
+                $check_apply = DB::table('user_recruitment')->where('recruitment_id',$recruitment_id)->where('user_id', auth()->guard('web')->user()->id)->first();
+                if($check_apply && $check_apply->hoso_id == null){
+                    $update_apply = DB::table('user_recruitment')->where('recruitment_id',$recruitment_id)->where('user_id', auth()->guard('web')->user()->id)->update([
+                        'hoso_id' => $request->hoso_id,
+                    ]);
+
+                   if($update_apply){
+                    return response()->json([
+                        'status' => 1,
+                        'msg' => 'Ứng tuyển thành công'
+                    ], 201);
+                   }
+                }elseif($check_apply && $check_apply->hoso_id != null){
+                    return response()->json([
+                        'status' => 0,
+                        'msg' => 'Bạn đã ứng tuyển công việc này'
+                    ], 203);
+                }else{
+                    $apply =  DB::table('user_recruitment')->insert([
+                        'recruitment_id' => $recruitment_id,
+                        'hoso_id' => $request->hoso_id,
+                        'user_id' => auth()->guard('web')->user()->id,
+                        'created_at' => Carbon::now(),
+                        'updated_at' => Carbon::now(),
+                    ]);
+
+                    return response()->json([
+                        'status' => 1,
+                        'msg' => 'Ứng tuyển thành công'
+                    ], 201); 
+                }
+
+            }else{
+                return response()->json([
+                    'status' => 0,
+                    'msg' => 'Chức năng này chỉ dành cho người tìm việc'
+                ], 203);
+            }
+        }else{
+            return response()->json([
+                'status' => 0,
+                'msg' => 'Đăng nhập để tiếp tục'
+            ], 503);
+        }
+    }
+
     public function searchInformation(Request $request)
     {
         $data = '';
-        $category_search = Category::where('search', 1)->where('status', 1)->where('type', '!=', 1)->orderBy('stt', 'ASC')->get();
         $category_noibat = Category::where('noi_bat', 1)->where('status', 1)->where('type', '!=', 1)->orderBy('stt', 'ASC')->get();
-        if ($request->information != null) {
-            $recruiment_list = DB::table('recruitments')->distinct()
+        if ($request->information != null && is_array($request->information)) {
+            $recruiment_list = DB::table('recruitments')    
                 ->select('recruitments.*', 'employers.company_name', 'employers.photo AS logo')
                 ->join('recruitment_information', 'recruitments.id', '=', 'recruitment_information.recruitment_id')
                 ->join('employers', 'recruitments.employer_id', '=', 'employers.id')
-                ->whereIn('recruitment_information.information_id', $request->information)->paginate(15);
+                ->whereIn('recruitment_information.information_id', $request->information)->get();
 
             // dd($recruiment_list);
 
@@ -129,7 +255,7 @@ class RecruitmentController extends Controller
             }
             
         } else {
-            $recruiment_list = Recruitment::where('status', 1)->orderBy('stt', 'ASC')->paginate(15);
+            $recruiment_list = Recruitment::where('status', 1)->orderBy('stt', 'ASC')->get();
             foreach ($recruiment_list as $item) {
                 $data .=           '<div class="job-item p-4 mb-4">
                                         <div class="row g-4">
@@ -203,6 +329,29 @@ class RecruitmentController extends Controller
             }
         }
         return $data;
+    }
+
+    public function updateApply(Request $request)
+    {
+        if (auth()->guard('web')->check()) {
+            if (auth()->guard('web')->user()->type == 1) {
+                $user_id = auth()->guard('web')->user()->id;
+                $apply = DB::table('user_recruitment')->where('user_id', $user_id)->where('recruitment_id', $request->id)->update([
+                    'hoso_id' => 0,
+                    'updated_at' => Carbon::now(),
+                ]);
+
+                return response()->json([
+                    'status' => 1,
+                    'msg' => 'Đã hủy ứng tuyển việc làm'
+                ], 200);
+            }
+        }else{
+            return response()->json([
+                'status' => 0,
+                'msg' => 'Bạn không có quyền'
+            ], 403);
+        }
     }
 
     public function wishList(Request $request)

@@ -13,7 +13,7 @@
                         @csrf
                         <!-- Email input -->
                         <div class="form-outline mb-4">
-                            <input type="email" id="form1Example13" name="email" placeholder="Email address" class="form-control form-control-lg" />
+                            <input type="email" id="form1Example13" name="email" value="{{old('email')}}" placeholder="Email address" class="form-control form-control-lg" />
                       
                         </div>
 

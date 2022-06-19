@@ -3,27 +3,7 @@
 (function ($) {
     "use strict";
 
-    function toastrSuccess(message){
-        toastr.success(message, 'Top Right', {
-            timeOut: 10000,
-            "closeButton": true,
-            "debug": false,
-            "newestOnTop": true,
-            "progressBar": true,
-            "positionClass": "toast-top-right",
-            "preventDuplicates": true,
-            "onclick": null,
-            "showDuration": "300",
-            "hideDuration": "1000",
-            "extendedTimeOut": "1000",
-            "showEasing": "swing",
-            "hideEasing": "linear",
-            "showMethod": "fadeIn",
-            "hideMethod": "fadeOut",
-            "tapToDismiss": false
-    
-        });
-    }
+   
     // Spinner
     var spinner = function () {
         setTimeout(function () {

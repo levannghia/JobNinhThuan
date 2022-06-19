@@ -24,7 +24,12 @@ class User extends Authenticatable
         'status',
         'phone',
         'photo',
-        'type'
+        'type',
+        'address',
+        'gender',
+        'hon_nhan',
+        'date_of_birth',
+        'province_matp'
     ];
 
     /**
@@ -46,10 +51,27 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    public function recruitmentApply()
+    {
+        return $this->belongsToMany(Recruitment::class,'user_recruitment','user_id','recruitment_id')->wherePivot('hoso_id','>','0')->wherePivot('user_id',auth()->id());
+    }
+
+    public function recruitmentWishlist()
+    {
+        return $this->belongsToMany(Recruitment::class,'user_recruitment','user_id','recruitment_id')->wherePivot('wishlist',1)->wherePivot('user_id',auth()->id());
+    }
+
+    public function provinces()
+    {
+        return $this->hasOne(Province::class,'province_matp','matp');
+    }
+
     public function Roles()
     {
         return $this->belongsToMany(Role::class,'role_admin','role_id','admin_id');
     }
+
+    
 
     // public function checkPermissionAccess($checkPermission)
     // {

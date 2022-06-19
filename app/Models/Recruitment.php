@@ -40,9 +40,8 @@ class Recruitment extends Model
         return $this->belongsTo(Employer::class,'employer_id');
     }
 
-    public function users()
-    {
-        return $this->belongsToMany(User::class,'user_recruitment'.'recruitment_id','user_id');
+    public function hoSoXinViec(){
+        return $this->belongsToMany(HoSoXinViec::class,'hosoxinviec_recruitment','hoso_id','recruitment_id');
     }
 
     // public function test($var = [])

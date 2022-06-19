@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\HoSoXinViec;
 use App\Models\Province;
+use App\Models\Recruitment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Cookie;
@@ -22,8 +23,22 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
+use function PHPUnit\Framework\isEmpty;
+
 class SeekerSiteController extends Controller
 {
+    public function manageWishList()
+    {
+        $user_wishlist = User::with('recruitmentWishlist')->get();
+        return view('site.seeker.manage_wishlist', compact('user_wishlist'));
+    }
+
+    public function manageApply()
+    {
+        $user_apply = User::with('recruitmentApply')->get();
+        return view('site.seeker.manage_apply', compact('user_apply'));
+    }
+
     public function manageProfile()
     {
         $hoSoXinViec_list = HoSoXinViec::where('user_id', auth()->id())->where('status', '!=', 2)->get();
@@ -32,17 +47,89 @@ class SeekerSiteController extends Controller
 
     public function createProfile()
     {
-        $category_list = Category::with('informations')->where('status', 1)->where('type',1)->orWhere('type',0)->orderBy('stt', 'ASC')->get();
+        $category_list = Category::with('informations')->where('status', 1)->where('type', 1)->orWhere('type', 0)->orderBy('stt', 'ASC')->get();
         $province_list = Province::get();
         $setting = Helper::settings();
-        // $data = $hs->kinh_nghiem;
-        // $data = json_decode($data); 
-        // foreach ($data as $key => $value) {
-        //     foreach ($value as $key2 => $value2) {
-        //         dd($value2->ten_cong_ty);
-        //     }
-        // }
         return view('site.seeker.create_profile', compact('category_list', 'province_list', 'setting'));
+    }
+    public function getProfileUser()
+    {
+        $setting = Helper::settings();
+        $province_list = Province::get();
+        $id = auth()->guard('web')->id();
+        $user = User::find($id);
+        return view('site.seeker.user', compact('user', 'setting', 'province_list'));
+    }
+
+    public function updateProfileUser(Request $request, $id)
+    {
+        $setting = Helper::settings();
+        $user = User::find($id);
+        $rules = [
+            "name" => "required|max:250",
+            "email" => "email|unique:users,email,'.$user->id.'",
+            "address" => "required|max:250",
+            "date_of_birth" => "required|max:80",
+            "address" => "max:250",
+            "province_matp" => "required|numeric",
+            "phone" => "required|digits:10",
+            'photo' => 'mimes:jpg,png,jpeg,gif|max:5400'
+        ];
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return back()->with(["type" => "danger", "flash_message" => "Lỗi nhập liệu"]);
+        }
+        if ($request->old_password != '' || $request->new_password != '' || $request->re_password != '') {
+            $rules2 = [
+                'old_password' => 'required',
+                'new_password' => 'required|min:8',
+                're_password' => 'required|same:new_password',
+            ];
+            $validator2 = Validator::make($request->all(), $rules2);
+            if ($validator2->fails()) {
+                return back()->with(["type" => "danger", "flash_message" => "Mật khẩu không giống nhau"]);
+                // return response()->json([
+                //     'status' => 0,
+                //     'code' => 500,
+                //     'msg' => $validator2->errors()->messages(),
+                // ]);
+            }
+            $current_password = auth()->guard('web')->user()->password;
+            if (Hash::check($request->old_password, $current_password)) {
+                $user->password = Hash::make($request->new_password);
+            } else {
+                return back()->with(["type" => "danger", "flash_message" => "Mật khẩu không chính xác"]);
+            }
+        }
+
+        $user->name = $request->name;
+        $user->phone = $request->phone;
+        $user->address = $request->address;
+        $user->hon_nhan = $request->hon_nhan;
+        $user->province_matp = $request->province_matp;
+        $user->gender = $request->gender;
+        $user->date_of_birth = $request->date_of_birth;
+
+        if ($request->hasFile('photo')) {
+            $file = $request->photo;
+            $file_name = Str::slug($file->getClientOriginalName(), "-") . "-" . time() . "." . $file->getClientOriginalExtension();
+            //resize file befor to upload large
+            if ($file->getClientOriginalExtension() != "svg") {
+                $image_resize = Image::make($file->getRealPath());
+                $thumb_size = json_decode($setting["THUMB_SIZE_USER"]);
+                $image_resize->resize($thumb_size->width, $thumb_size->height);
+                $image_resize->save('upload/images/seeker/thumb/' . $file_name);
+            }
+            // close upload image
+            $file->move("upload/images/seeker/large/", $file_name);
+
+            $user->photo = $file_name;
+        }
+
+
+        if ($user->save()) {
+            return back()->with(["type" => "success", "flash_message" => "Cập nhật thông tin thành công"]);
+        }
     }
 
     public function storeProfile(Request $request)
@@ -157,7 +244,7 @@ class SeekerSiteController extends Controller
     public function editProfile($slug, $id)
     {
         $setting = Helper::settings();
-        $category_list = Category::with('informations')->where('status', 1)->where('type',1)->orWhere('type',0)->orderBy('stt', 'ASC')->get();
+        $category_list = Category::with('informations')->where('status', 1)->where('type', 1)->orWhere('type', 0)->orderBy('stt', 'ASC')->get();
         $province_list = Province::get();
         $hoSoXinViec = HoSoXinViec::with('provinces', 'informations')->where('slug', $slug)->where('id', $id)->first();
 
@@ -166,7 +253,7 @@ class SeekerSiteController extends Controller
             $bang_cap = json_decode($hoSoXinViec->bang_cap);
             $ngoai_ngu = json_decode($hoSoXinViec->ngoai_ngu);
             $kinh_nghiem = json_decode($hoSoXinViec->kinh_nghiem);
-       
+
             return view('site.seeker.edit_profile', compact('hoSoXinViec', 'setting', 'province_list', 'category_list', 'tin_hoc', 'bang_cap', 'ngoai_ngu', 'kinh_nghiem'));
         } else {
             abort(404);
@@ -265,7 +352,7 @@ class SeekerSiteController extends Controller
                                 ]);
                                 break;
                         }
-                    }else{
+                    } else {
                         $bc_arr[$key]['photo'] = $value['photo_temp'];;
                     }
                 }
@@ -341,10 +428,10 @@ class SeekerSiteController extends Controller
     {
         $google_user = Socialite::driver('google')->stateless()->user();
         $social = Social::where('provider', 'google')->where('provider_id', $google_user->id)->first();
-        
+
         if ($social) {
-            $user = User::where('id',$social->user_id)->first();
-            if($user){
+            $user = User::where('id', $social->user_id)->first();
+            if ($user) {
                 $social->update([
                     'token' => $google_user->token,
                     'refresh_token' => $google_user->refreshToken,
@@ -353,11 +440,9 @@ class SeekerSiteController extends Controller
 
                 return redirect()->route('home');
             }
-            
         } else {
             $check_user = User::where('email', $google_user->getEmail())->first();
-            $user_id = $check_user->id;
-            if(!$check_user){
+            if (!$check_user) {
                 $user = User::create([
                     'name' => $google_user->getName(),
                     'email' => $google_user->getEmail(),
@@ -377,13 +462,13 @@ class SeekerSiteController extends Controller
                 'user_id' => $user_id
             ]);
 
-            if(!$check_user){
+            if (!$check_user) {
                 Auth::guard('web')->login($user);
-            }else{
+            } else {
                 Auth::guard('web')->login($check_user);
             }
             return redirect()->route('home');
-        }     
+        }
     }
 
     public function loginFacebook()
@@ -395,11 +480,11 @@ class SeekerSiteController extends Controller
     {
         $provider =  Socialite::driver('facebook')->user();
         $social = Social::where('provider', 'facebook')->where('provider_id', $provider->getId())->first();
-        
+
         if ($social) {
             $user = User::where('id', $social->user_id)->first();
-            
-            if($user){
+
+            if ($user) {
                 $social->update([
                     'token' => $provider->token,
                     'refresh_token' => $provider->refreshToken,
@@ -408,9 +493,8 @@ class SeekerSiteController extends Controller
 
                 return redirect()->route('home');
             }
-
         } else {
-           
+
             $social = new Social([
                 "provider" => "facebook",
                 "provider_id" => $provider->getId(),
@@ -508,7 +592,7 @@ class SeekerSiteController extends Controller
             'email' => 'required|email|unique:users,email',
         ]);
 
-        if (!$validator->passes()) {
+        if ($validator->fails()) {
             return response()->json(['status' => 0, 'error' => $validator->errors()->toArray()]);
         } else {
             $token = Str::random(30);
@@ -534,6 +618,7 @@ class SeekerSiteController extends Controller
                     $mail->subject(config('app.name') . " - Xác nhận tài khoản");
                     $mail->to($data['email'], $data['name']);
                     $mail->from(config('mail.from.address'), config('mail.from.name'));
+                    // $mail->attach('/path/to/file');
                 });
                 return response()->json([
                     'status' => 1,

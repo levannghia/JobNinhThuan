@@ -12,3 +12,15 @@ class tinHoc{
     const Powerpoint = 2;
     const Outlook = 3;
 }
+
+Class gender{
+    const Male = 1;
+    const Female = 2;
+    const Other = 3;
+    
+}
+
+Class honNhan {
+    const signle = 0;
+    const Married = 1;
+}

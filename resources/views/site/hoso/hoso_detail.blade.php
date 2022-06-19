@@ -10,7 +10,7 @@
             ->user()->type == 1
     ) {
         $check_apply = DB::table('user_recruitment')
-            ->where('recruitment_id', $recruitment->id)
+            ->where('recruitment_id', $hoSo->id)
             ->where('user_id', auth()->user()->id)
             ->first();
     }
@@ -21,11 +21,19 @@
             <div class="row gy-5 gx-4">
                 <div class="col-lg-8">
                     <div class="d-flex align-items-center mb-5">
+                        @if (@getimagesize($hoSo->users->photo))
                         <img class="flex-shrink-0 img-fluid border rounded"
-                            src="/upload/images/employer/thumb/{{ $recruitment->Employers->photo }}"
-                            alt="{{ $recruitment->Employers->company_name }}" style="width: 80px; height: 80px;">
+                            src="{{ $hoSo->users->photo }}"
+                            alt="{{ $hoSo->users->name }}" style="width: 80px; height: 80px;">
+                        @elseif ($hoSo->users->photo == null)
+                            ok
+                        @else
+                        <img class="flex-shrink-0 img-fluid border rounded"
+                        src="/upload/images/seeker/thumb/{{ $hoSo->users->photo }}"
+                        alt="{{ $hoSo->users->name }}" style="width: 80px; height: 80px;">
+                        @endif
                         <div class="text-start ps-4">
-                            <h3 class="mb-3">{{ $recruitment->vi_tri }}</h3>
+                            <h3 class="mb-3">{{ $hoSo->vi_tri }}</h3>
                             <span id="add_wishlist" class="text-truncate me-3"><i id="icon_wishlist"
                                     class="{{ isset($check_wishlist) && $check_wishlist->wishlist == 1 ? 'fas' : 'far' }} fa-heart text-primary me-2"></i>Lưu
                                 việc làm</span>
@@ -37,8 +45,6 @@
                                         data-bs-target="#applyModal">Nộp hồ sơ</button>
                                 @endif
                             </span>
-                            <span class="text-truncate me-3"><button type="button" onclick="window.print();"
-                                    class="btn btn-outline-primary">In việc làm</button></span>
                         </div>
                     </div>
 
@@ -47,7 +53,7 @@
 
                             @foreach ($category_list as $category)
                                 @foreach ($category->informations as $info)
-                                    @if ($recruitment->informations->contains('id', $info->id))
+                                    @if ($hoSo->informations->contains('id', $info->id))
                                         <div class="col-md-6 mb-3">
                                             <h5>{{ $category->name }}</h5>
                                             <span class="text-truncate me-3"><i
@@ -59,7 +65,7 @@
                             <div class="col-md-6 mb-3">
                                 <h5>Địa điểm làm việc</h5>
                                 <span class="text-truncate me-3"><i class="fa fa-map-marker-alt text-primary me-2"></i>
-                                    @foreach ($recruitment->provinces as $province)
+                                    @foreach ($hoSo->provinces as $province)
                                         {{ $province->name }}
                                         @if (!$loop->last)
                                             ,
@@ -70,35 +76,35 @@
                         </div>
                     </div>
 
-                    <div class="mb-5">
+                    {{-- <div class="mb-5">
                         <h4 class="mb-3">Mô tả công việc</h4>
-                        <p>{{ $recruitment->description }}</p>
+                        <p>{{ $hoSo->description }}</p>
                         <h4 class="mb-3">Yêu cầu</h4>
-                        <p>{{ $recruitment->yeu_cau }}</p>
+                        <p>{{ $hoSo->yeu_cau }}</p>
                         <h4 class="mb-3">Quyền lợi</h4>
-                        <p>{{ $recruitment->quyen_loi }}</p>
+                        <p>{{ $hoSo->quyen_loi }}</p>
                         <h4 class="mb-3">Hồ sơ ứng tuyển gồm</h4>
-                        <p>{{ $recruitment->ho_so_gom }}</p>
+                        <p>{{ $hoSo->ho_so_gom }}</p>
                         <h4 class="mb-3">Thông tin liên hệ</h4>
                         <ul class="list-unstyled">
                             <li><i class="fa fa-angle-right text-primary me-2"></i>Người liên hệ:
-                                {{ $recruitment->Employers->name }}
+                                {{ $hoSo->Employers->name }}
                             </li>
                             <li><i class="fa fa-angle-right text-primary me-2"></i>Địa chỉ:
-                                {{ $recruitment->Employers->address }}
+                                {{ $hoSo->Employers->address }}
                             </li>
                             <li><i class="fa fa-angle-right text-primary me-2"></i>Số điện thoại: <a
-                                    href="tel:{{ $recruitment->Employers->phone }}">{{ $recruitment->Employers->phone }}</a>
+                                    href="tel:{{ $hoSo->Employers->phone }}">{{ $hoSo->Employers->phone }}</a>
                             </li>
                             <li><i class="fa fa-angle-right text-primary me-2"></i>Email: <a
-                                    href="mailto:{{ $recruitment->Employers->email }}">{{ $recruitment->Employers->email }}</a>
+                                    href="mailto:{{ $hoSo->Employers->email }}">{{ $hoSo->Employers->email }}</a>
                             </li>
                         </ul>
-                    </div>
+                    </div> --}}
 
                     <div class="">
                         <h4 class="mb-4">Apply For The Job</h4>
-                        <form method="POST" action="{{ route('recruitment.apply.for.email', $recruitment->id) }}"
+                        <form method="POST" action="{{ route('recruitment.apply.for.email', $hoSo->id) }}"
                             class="needs-validation" novalidate enctype="multipart/form-data">
                             @csrf
                             <div class="row g-3">
@@ -133,18 +139,18 @@
                         <h4 class="mb-4">Job Summery</h4>
                         {{-- <p><i class="fa fa-angle-right text-primary me-2"></i></p> --}}
 
-                        <p><i class="fa fa-angle-right text-primary me-2"></i>View: {{ $recruitment->view }}</p>
+                        <p><i class="fa fa-angle-right text-primary me-2"></i>View: {{ $hoSo->view }}</p>
                         <p><i class="fa fa-angle-right text-primary me-2"></i>Published On:
-                            {{ Helper::formatDate($recruitment->created_at) }}</p>
+                            {{ Helper::formatDate($hoSo->created_at) }}</p>
                         <p><i class="fa fa-angle-right text-primary me-2"></i>Số lượng tuyển:
-                            {{ $recruitment->so_luong }}
+                            {{ $hoSo->so_luong }}
                         </p>
                         <p class="m-0"><i class="fa fa-angle-right text-primary me-2"></i>Date Line:
-                            {{ $recruitment->han_nop }}</p>
+                            {{ $hoSo->han_nop }}</p>
                     </div>
                     <div class="bg-light rounded p-5 wow slideInUp" data-wow-delay="0.1s">
                         <h4 class="mb-4">Company Detail</h4>
-                        <p class="m-0">{{ $recruitment->description }}</p>
+                        <p class="m-0">{{ $hoSo->description }}</p>
                     </div>
                 </div>
             </div>
@@ -212,7 +218,7 @@
                 var form_data = $('#form_apply').serialize();
 
                 $.ajax({
-                    url: "{{ route('recruitment.apply', $recruitment->id) }}",
+                    url: "{{ route('recruitment.apply', $hoSo->id) }}",
                     type: "POST",
                     data: form_data,
                     success: function(data) {
@@ -231,12 +237,10 @@
 
             $(document).on("click", "#add_wishlist", function(event) {
 
-                const id = "{{ $recruitment->id }}";
-                const vi_tri = "{{ $recruitment->vi_tri }}";
-                const employer_name = "{{ $recruitment->Employers->company_name }}";
+                const id = "{{ $hoSo->id }}";
+                const vi_tri = "{{ $hoSo->vi_tri }}";
                 const url =
-                    "{{ route('recruitment.job.detail', ['slug' => $recruitment->slug, 'id' => $recruitment->id]) }}";
-
+                    "{{ route('recruitment.job.detail', ['slug' => $hoSo->slug, 'id' => $hoSo->id]) }}";
                 const item = {
                     'id': id,
                     'vi_tri': vi_tri,

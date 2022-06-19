@@ -30,6 +30,40 @@ class Helper
         ];
     }
 
+    public static function getGender()
+    {
+        return [
+            '' => 'Chọn giới tính',
+            gender::Male => 'Nam',
+            gender::Female => 'Nữ',
+            gender::Other => 'Khác'
+        ];
+    }
+
+    public static function getGenderValue($gender)
+    {
+        switch ($gender) {
+            case gender::Male:
+                return 'Nam';
+                break;
+
+            case gender::Female:
+                return 'Nữ';
+                break;
+            default:
+                return 'Khác';
+                break;
+        }
+    }
+
+    public static function getHonNhan()
+    {
+        return [
+            honNhan::signle => "Độc thân",
+            honNhan::Married => "Đã kết hôn"
+        ];
+    }
+
     public static function getStatus()
     {
         return [
@@ -74,6 +108,11 @@ class Helper
         return $key == $value ? 'selected' : '';
     }
 
+    public static function getCheckedValue($key, $value)
+    {
+        return $key == $value ? 'checked' : '';
+    }
+
     public static function formatDate($date)
     {
         return $date->format('d/m/Y');
@@ -93,14 +132,14 @@ class Helper
 
     public static function getNameEmployer()
     {
-        if(auth()->guard('web')->check() && auth()->guard('web')->user()->type == 2){
+        if (auth()->guard('web')->check() && auth()->guard('web')->user()->type == 2) {
             $id = auth()->guard('web')->user()->id;
             $name = auth()->guard('web')->user()->name;
-            $employer = Employer::where('user_id',$id)->first();
+            $employer = Employer::where('user_id', $id)->first();
 
-            if($employer && !empty($employer->company_name)){
+            if ($employer && !empty($employer->company_name)) {
                 return $employer->company_name;
-            }else{
+            } else {
                 return $name;
             }
         }

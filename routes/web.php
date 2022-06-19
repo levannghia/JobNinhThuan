@@ -9,6 +9,7 @@ use App\Http\Controllers\Dashboard\ThongTinTuyenDungController;
 use App\Http\Controllers\Dashboard\WorkLocationController;
 use App\Http\Controllers\Site\HomeSiteController;
 use App\Http\Controllers\Site\SeekerSiteController;
+use App\Http\Controllers\Site\HoSoSiteController;
 use App\Http\Controllers\Site\EmployerSiteController;
 use App\Http\Controllers\Site\RecruitmentController;
 use Illuminate\Support\Facades\Route;
@@ -73,12 +74,17 @@ Route::middleware(['web'])->group(function(){
 
         Route::prefix('profiles')->name('profile.')->middleware(['check.seeker'])->group(function(){
             Route::get('/',[SeekerSiteController::class,'manageProfile'])->name('index.profile');
+            Route::get('/user',[SeekerSiteController::class,'getProfileUser'])->name('index.profile.user');
+            Route::post('/update-user/{id}',[SeekerSiteController::class,'updateProfileUser'])->name('update.profile.user');
+            Route::get('/viec-lam-da-luu',[SeekerSiteController::class,'manageWishList'])->name('wishlist');
+            Route::get('/viec-lam-da-ung-tuyen',[SeekerSiteController::class,'manageApply'])->name('apply');
             Route::get('create',[SeekerSiteController::class,'createProfile'])->name('create.profile');
             Route::post('store',[SeekerSiteController::class,'storeProfile'])->name('store.profile');
             Route::get('edit/{slug}/{id}',[SeekerSiteController::class,'editProfile'])->name('edit.profile');
             Route::post('update/{id}',[SeekerSiteController::class,'updateProfile'])->name('update.profile');
             Route::get('update-status',[SeekerSiteController::class,'updateStatus'])->name('update.status');
-            Route::get('delete',[SeekerSiteController::class,'deleteProfile'])->name('delete.profile');     
+            Route::get('delete',[SeekerSiteController::class,'deleteProfile'])->name('delete.profile');  
+             
         });
     });
 
@@ -107,6 +113,22 @@ Route::middleware(['web'])->group(function(){
         Route::get('/',[RecruitmentController::class,'index'])->name('index');
         Route::get('/{slug}/{id}',[RecruitmentController::class,'jobDetail'])->name('job.detail');
         Route::get('/search-information',[RecruitmentController::class,'searchInformation'])->name('search.information');
+        Route::post('/update-apply',[RecruitmentController::class,'updateApply'])->name('update.apply');
         Route::get('wishlist',[RecruitmentController::class,'wishList'])->name('wishlist');
+        Route::post('apply-recruitment/{recruitment_id}',[RecruitmentController::class,'apply'])->name('apply');
+        Route::post('apply-recruitment-for-email/{recruitment_id}',[RecruitmentController::class,'applyForEmail'])->name('apply.for.email');
     });
+
+    Route::prefix('tim-ho-so')->name('hoso.')->group(function(){
+        Route::get('/',[HoSoSiteController::class,'index'])->name('index');
+        Route::get('/{slug}/{id}',[HoSoSiteController::class,'hoSoDetail'])->name('detail');
+        Route::get('/search-information',[HoSoSiteController::class,'searchInformation'])->name('search.information');
+        // Route::post('/update-apply',[HoSoSiteController::class,'updateApply'])->name('update.apply');
+        Route::get('flow-user',[HoSoSiteController::class,'flowUser'])->name('flow.user');
+        // Route::post('apply-recruitment/{recruitment_id}',[HoSoSiteController::class,'apply'])->name('apply');
+        // Route::post('apply-recruitment-for-email/{recruitment_id}',[HoSoSiteController::class,'applyForEmail'])->name('apply.for.email');
+    });
+});
+Route::get('/ok',function(){
+    return view('dashboard.page.email_apply_recruitment');
 });

@@ -63,6 +63,8 @@
 
         <!-- Back to Top -->
         <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+        <!-- Button trigger modal -->
+
     </div>
 
     <!-- JavaScript Libraries -->
@@ -85,7 +87,7 @@
 
     <!-- Template Javascript -->
     <script src="{{asset('site/js/main.js')}}"></script>
-    <script src="{{asset('site/js/app.js')}}"></script>
+    <script src="{{asset('site/js/app.js?v='.time())}}"></script>
     @stack('script')
 </body>
 
