@@ -32,9 +32,6 @@
                                         <option value="{{ $province->matp }}" {{$hoSoXinViec->provinces->contains('matp',$province->matp) ? 'selected' : ''}}>{{ $province->name }}</option>
                                         @endforeach
                                     </select>
-                                    {{-- <div class="valid-feedback">
-                                        Looks good!
-                                    </div> --}}
                                     <div class="invalid-feedback">
                                         Trường này là bắt buộc
                                     </div>
@@ -71,7 +68,7 @@
                         </div>
                         <div class="card-body">
                             <div class="kinh-nghiem-lv">
-                                @if (!empty($ngoai_ngu))
+                                @if (!empty($kinh_nghiem))
                                 @foreach ($kinh_nghiem as $key => $item)
                                 <div class="row g-3 pt-3">
                                     <p class="card-title btn text-center delete-style btn-delete-kn" data-dem-kn="{{$key}}">DELETE</p>
@@ -211,7 +208,7 @@
                                                         <div class="check-trinh-do">
                                                         @foreach (config('thongtintuyendung.trinhdo') as $key => $value)       
                                                         <div class="form-check form-check-inline">
-                                                            <input class="form-check-input" type="radio" name="tin_hoc[trinh_do][{{$item['value']}}]" id="inlineRadio1"
+                                                            <input class="form-check-input" type="radio" name="tin_hoc[trinh_do][{{$item['value']}}]"
                                                                 value="{{$value['value']}}" {{ isset($tin_hoc->trinh_do) && $tin_hoc->trinh_do[$stt] == $value['value'] ? 'checked' : ''}}>
                                                             <label class="form-check-label" for="inlineRadio1">{{$value['name']}}</label>
                                                         </div>
@@ -249,6 +246,18 @@
     </div>
 @endsection
 @push('script')
+@if (Session::has('type') && Session::get('type') == 'success')
+        <script>
+            var message = "{{ Session::get('flash_message') }}";
+
+            Successnotification(message);
+        </script>
+    @elseif (Session::has('type') && Session::get('type') == 'danger')
+        <script>
+            var message = "{{ Session::get('flash_message') }}";
+            Errornotification(message);
+        </script>
+    @endif
     <script>
         
         const arr_kn = $("[data-dem-kn]").toArray();

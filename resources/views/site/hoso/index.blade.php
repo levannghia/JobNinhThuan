@@ -59,7 +59,7 @@
                                     <td>
                                         <a class="name-hoso" href="{{route('hoso.detail',['slug'=>$hoso->slug,'id'=>$hoso->id])}}">{{ $hoso->vi_tri }}</a>
                                         <div class="info-more">
-                                            <span>- Update: {{ Helper::formatDate($hoso->updated_at) }}</span>
+                                            <span>{{$hoso->users->name}} - Update: {{ Helper::formatDate($hoso->updated_at) }}</span>
                                             <span>- View: {{ $hoso->view }}</span>
                                         </div>
                                     </td>

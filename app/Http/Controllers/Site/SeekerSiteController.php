@@ -205,20 +205,12 @@ class SeekerSiteController extends Controller
 
                                     $bc_arr[$key]['photo'] = $file_name;
                                 } else {
-                                    return response()->json([
-                                        'status' => 0,
-                                        'code' => 503,
-                                        'msg' => "Chỉ được up file có kích thước nhỏ hơn 7mb",
-                                    ]);
+                                    return back()->with(["type" => "danger", "flash_message" => "Chỉ được up file có kích thước nhỏ hơn 7mb"]);
                                 }
                                 break;
 
                             default:
-                                return response()->json([
-                                    'status' => 0,
-                                    'code' => 500,
-                                    'msg' => "Tệp tải lên phải là hình ảnh",
-                                ]);
+                                return back()->with(["type" => "danger", "flash_message" => "Tệp tải lên phải là hình ảnh"]);
                                 break;
                         }
                     }
@@ -230,11 +222,7 @@ class SeekerSiteController extends Controller
             $hoSoXinViec->informations()->attach($request->information_id);
             $hoSoXinViec->provinces()->attach($request->province_matp);
             DB::commit();
-            return response()->json([
-                'status' => 1,
-                'code' => 200,
-                'msg' => "Tạo hồ sơ thành công",
-            ]);
+            return back()->with(["type" => "success", "flash_message" => "Tạo hồ sơ thành công"]);
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error("message: " . $e->getMessage() . ' ---- line: ' . $e->getLine());
@@ -270,11 +258,7 @@ class SeekerSiteController extends Controller
 
         $validator = Validator::make($request->all(), $rules);
         if ($validator->fails()) {
-            return response()->json([
-                'status' => false,
-                'code' => 500,
-                'msg' => "Có lỗi xãy ra",
-            ]);
+            return back()->with(["type" => "danger", "flash_message" => "Có lỗi xãy ra"]);
         }
 
         $hoSoXinViec = HoSoXinViec::find($id);
@@ -283,13 +267,14 @@ class SeekerSiteController extends Controller
             $hoSoXinViec->vi_tri = $request->vitri;
             $hoSoXinViec->slug = Str::slug($request->vitri);
             $hoSoXinViec->description = $request->description;
+            $hoSoXinViec->updated_at = Carbon::now();
             $hoSoXinViec->kinh_nghiem = !empty($request->data['kinh_nghiem']) ? json_encode($request->data['kinh_nghiem']) : '';
             $hoSoXinViec->ngoai_ngu = !empty($request->data['ngoai_ngu']) ? json_encode($request->data['ngoai_ngu']) : '';
             $hoSoXinViec->tin_hoc = !empty($request->tin_hoc) ? json_encode($request->tin_hoc) : '';
             if ($hoSoXinViec->bang_cap != '') {
                 $data_bc = json_decode($hoSoXinViec->bang_cap);
             }
-            // dd($data_bc[0]->photo);
+            
             $bang_cap = !empty($request->data['bang_cap']) ? $request->data['bang_cap'] : '';
             $bc_arr = array();
             if (!empty($bang_cap) && is_array($bang_cap)) {
@@ -336,24 +321,16 @@ class SeekerSiteController extends Controller
                                     $file->move("upload/images/hosoxinviec/large/", $file_name);
                                     $bc_arr[$key]['photo'] = $file_name;
                                 } else {
-                                    return response()->json([
-                                        'status' => 0,
-                                        'code' => 503,
-                                        'msg' => "Chỉ được up file có kích thước nhỏ hơn 7mb",
-                                    ]);
+                                    return back()->with(["type" => "danger", "flash_message" => "Chỉ được up file có kích thước nhỏ hơn 7mb"]);
                                 }
                                 break;
 
                             default:
-                                return response()->json([
-                                    'status' => 0,
-                                    'code' => 500,
-                                    'msg' => "Tệp tải lên phải là hình ảnh",
-                                ]);
+                                return back()->with(["type" => "danger", "flash_message" => "Tệp tải lên phải là hình ảnh"]);
                                 break;
                         }
                     } else {
-                        $bc_arr[$key]['photo'] = $value['photo_temp'];;
+                        $bc_arr[$key]['photo'] = $value['photo_temp'];
                     }
                 }
 
@@ -365,7 +342,7 @@ class SeekerSiteController extends Controller
             $hoSoXinViec->informations()->sync($request->information_id);
             $hoSoXinViec->provinces()->sync($request->province_matp);
             DB::commit();
-            return redirect()->route('seeker.profile.edit.profile', ['slug' => $hoSoXinViec->slug, 'id' => $hoSoXinViec->id]);
+            return redirect()->route('seeker.profile.edit.profile', ['slug' => $hoSoXinViec->slug, 'id' => $hoSoXinViec->id])->with(["type" => "success", "flash_message" => "Cập nhật hồ sơ thành công"]);;
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error("message: " . $e->getMessage() . '---- line: ' . $e->getLine());

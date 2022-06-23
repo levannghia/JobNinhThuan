@@ -13,6 +13,7 @@ use Helper;
 
 class HoSoSiteController extends Controller
 {
+
     public function index()
     {
         $category_search = Category::where('search', 1)->where('status', 1)->where('type', '!=', 2)->orderBy('stt', 'ASC')->get();
@@ -28,8 +29,8 @@ class HoSoSiteController extends Controller
 
         if ($hoSo) {
             $view = array();
-            if (auth()->guard('web')->check() && auth()->guard('web')->user()->type == 1) {
-                $check_flow = DB::table('user_recruitment')->where('ho_id', $hoSo->id)->where('user_id', auth()->guard('web')->user()->id)->first();
+            if (auth()->guard('web')->check() && auth()->guard('web')->user()->type == 2) {
+                $check_flow = DB::table('user_recruitment')->where('hoso_id', $hoSo->id)->where('user_id', auth()->guard('web')->user()->id)->first();
                 if (!session()->has('view_emloyer') || session('view_emloyer') != $hoSo->id) {
                     $hoSo->view = $hoSo->view + 1;
                     $hoSo->save();

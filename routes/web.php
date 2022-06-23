@@ -105,7 +105,8 @@ Route::middleware(['web'])->group(function(){
             Route::get('edit/{slug}/{id}',[EmployerSiteController::class,'editJob'])->name('edit');
             Route::post('update/{id}',[EmployerSiteController::class,'updateJob'])->name('update');
             Route::get('update-status',[EmployerSiteController::class,'updateStatus'])->name('update.status');
-            Route::get('delete',[EmployerSiteController::class,'deleteJob'])->name('delete');     
+            Route::get('delete',[EmployerSiteController::class,'deleteJob'])->name('delete'); 
+            Route::get('/ho-so-ung-tuyen',[SeekerSiteController::class,'manageApply'])->name('apply');    
         });
     });
 
@@ -128,7 +129,4 @@ Route::middleware(['web'])->group(function(){
         // Route::post('apply-recruitment/{recruitment_id}',[HoSoSiteController::class,'apply'])->name('apply');
         // Route::post('apply-recruitment-for-email/{recruitment_id}',[HoSoSiteController::class,'applyForEmail'])->name('apply.for.email');
     });
-});
-Route::get('/ok',function(){
-    return view('dashboard.page.email_apply_recruitment');
 });

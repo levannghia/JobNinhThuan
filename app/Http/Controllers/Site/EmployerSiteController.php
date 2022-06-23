@@ -33,6 +33,12 @@ class EmployerSiteController extends Controller
         return view('site.employer.profile', compact('user', 'employer', 'province_list', 'setting'));
     }
 
+    public function manageApply()
+    {
+        $user_apply = User::with('recruitmentApply')->get();
+        return view('site.employer.manage_apply', compact('user_apply'));
+    }
+
     public function updateProfileEmployer(Request $request, $id)
     {
         $setting = Helper::settings();
@@ -156,11 +162,7 @@ class EmployerSiteController extends Controller
 
         $validator = Validator::make($request->all(), $rules);
         if ($validator->fails()) {
-            return response()->json([
-                'status' => 0,
-                'code' => 500,
-                'msg' => "Có lỗi xãy ra",
-            ]);
+            return back()->with(["type" => "danger", "flash_message" => "Có lỗi xãy ra"]);
         }
 
         try {
@@ -190,21 +192,13 @@ class EmployerSiteController extends Controller
                 $recruitment->hoa_hong_to = $request->hoahong_to;
                 $recruitment->save();
             } else {
-                return response()->json([
-                    'status' => 0,
-                    'code' => 500,
-                    'msg' => "Có lỗi xãy ra",
-                ]);
+                return back()->with(["type" => "danger", "flash_message" => "Có lỗi xảy ra"]);
             }
 
             $recruitment->informations()->attach($request->information_id);
             $recruitment->provinces()->attach($request->province_matp);
             DB::commit();
-            return response()->json([
-                'status' => 1,
-                'code' => 200,
-                'msg' => "Tạo tin tuyển dụng thành công",
-            ]);
+            return back()->with(["type" => "success", "flash_message" => "Tạo tin tuyển dụng thành công"]);
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error("message: " . $e->getMessage() . ' ---- line: ' . $e->getLine());
@@ -242,11 +236,7 @@ class EmployerSiteController extends Controller
 
         $validator = Validator::make($request->all(), $rules);
         if ($validator->fails()) {
-            return response()->json([
-                'status' => false,
-                'code' => 500,
-                'msg' => "Có lỗi xãy ra",
-            ]);
+            return back()->with(["type" => "danger", "flash_message" => "Có lỗi xãy ra"]);
         }
 
         try {
@@ -272,17 +262,13 @@ class EmployerSiteController extends Controller
                 $employer->name = $request->phone_name;
                 $employer->save();
             } else {
-                return response()->json([
-                    'status' => 0,
-                    'code' => 500,
-                    'msg' => "Có lỗi xãy ra",
-                ]);
+                return back()->with(["type" => "danger", "flash_message" => "Có lỗi xãy ra"]);
             }
 
             $recruitment->informations()->sync($request->information_id);
             $recruitment->provinces()->sync($request->province_matp);
             DB::commit();
-            return redirect()->route('employer.job.edit', ['slug' => $recruitment->slug, 'id' => $recruitment->id]);
+            return redirect()->route('employer.job.edit', ['slug' => $recruitment->slug, 'id' => $recruitment->id])->with(["type" => "success", "flash_message" => "Cập nhật tin tuyển dụng thành công"]);;
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error("message: " . $e->getMessage() . ' ---- line: ' . $e->getLine());

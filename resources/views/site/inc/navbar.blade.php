@@ -37,6 +37,7 @@
                     <a href="{{route('employer.job.create')}}" class="dropdown-item">Tạo tin tuyển dụng</a>
                     <a href="{{route('employer.job.profile')}}" class="dropdown-item">Thông tin tài khoản</a>
                     <a href="{{route('employer.job.index')}}" class="dropdown-item">Quản lý tin tuyển dụng</a>
+                    <a href="{{route('employer.job.apply')}}" class="dropdown-item">Hồ sơ ứng tuyển</a>
                     <a href="{{route('employer.logout')}}" class="dropdown-item">logout</a>
                 </div>
             </div>

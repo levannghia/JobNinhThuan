@@ -1,50 +1,28 @@
 @extends('site.layout')
 @section('content')
-    @php
-    if (
-        auth()
-            ->guard('web')
-            ->check() &&
-        auth()
-            ->guard('web')
-            ->user()->type == 1
-    ) {
-        $check_apply = DB::table('user_recruitment')
-            ->where('recruitment_id', $hoSo->id)
-            ->where('user_id', auth()->user()->id)
-            ->first();
-    }
-    @endphp
-
     <div class="container-xxl py-5 wow fadeInUp" data-wow-delay="0.1s">
         <div class="container">
             <div class="row gy-5 gx-4">
                 <div class="col-lg-8">
                     <div class="d-flex align-items-center mb-5">
                         @if (@getimagesize($hoSo->users->photo))
-                        <img class="flex-shrink-0 img-fluid border rounded"
-                            src="{{ $hoSo->users->photo }}"
-                            alt="{{ $hoSo->users->name }}" style="width: 80px; height: 80px;">
+                            <img class="flex-shrink-0 img-fluid border rounded" src="{{ $hoSo->users->photo }}"
+                                alt="{{ $hoSo->users->name }}" style="width: 80px; height: 80px;">
                         @elseif ($hoSo->users->photo == null)
-                            ok
+                            <img class="flex-shrink-0 img-fluid border rounded" src="/site/img/avatar.png"
+                                alt="{{ $hoSo->users->name }}" style="width: 80px; height: 80px;">
                         @else
-                        <img class="flex-shrink-0 img-fluid border rounded"
-                        src="/upload/images/seeker/thumb/{{ $hoSo->users->photo }}"
-                        alt="{{ $hoSo->users->name }}" style="width: 80px; height: 80px;">
+                            <img class="flex-shrink-0 img-fluid border rounded"
+                                src="/upload/images/seeker/thumb/{{ $hoSo->users->photo }}"
+                                alt="{{ $hoSo->users->name }}" style="width: 80px; height: 80px;">
                         @endif
                         <div class="text-start ps-4">
                             <h3 class="mb-3">{{ $hoSo->vi_tri }}</h3>
-                            <span id="add_wishlist" class="text-truncate me-3"><i id="icon_wishlist"
-                                    class="{{ isset($check_wishlist) && $check_wishlist->wishlist == 1 ? 'fas' : 'far' }} fa-heart text-primary me-2"></i>Lưu
-                                việc làm</span>
-                            <span class="text-truncate me-3 show_btn_apply">
-                                @if (isset($check_apply) && $check_apply->hoso_id > 0)
-                                    <button type="button" class="btn btn-primary">Đã ứng tuyển</button>
-                                @else
-                                    <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal"
-                                        data-bs-target="#applyModal">Nộp hồ sơ</button>
-                                @endif
-                            </span>
+                            <span class="text-truncate me-3 viethoa"><i class="fas fa-signature text-primary"></i>
+                                {{ $hoSo->users->name }}</span>
+                            <span id="add_flow" class="text-truncate me-3"><i id="icon_flow"
+                                    class="{{ isset($check_flow) && $check_flow->flow_user == 1 ? 'fas' : 'far' }} fa-star text-primary me-2"></i>Lưu
+                                hồ sơ</span>
                         </div>
                     </div>
 
@@ -76,123 +54,199 @@
                         </div>
                     </div>
 
-                    {{-- <div class="mb-5">
-                        <h4 class="mb-3">Mô tả công việc</h4>
-                        <p>{{ $hoSo->description }}</p>
-                        <h4 class="mb-3">Yêu cầu</h4>
-                        <p>{{ $hoSo->yeu_cau }}</p>
-                        <h4 class="mb-3">Quyền lợi</h4>
-                        <p>{{ $hoSo->quyen_loi }}</p>
-                        <h4 class="mb-3">Hồ sơ ứng tuyển gồm</h4>
-                        <p>{{ $hoSo->ho_so_gom }}</p>
-                        <h4 class="mb-3">Thông tin liên hệ</h4>
-                        <ul class="list-unstyled">
-                            <li><i class="fa fa-angle-right text-primary me-2"></i>Người liên hệ:
-                                {{ $hoSo->Employers->name }}
-                            </li>
-                            <li><i class="fa fa-angle-right text-primary me-2"></i>Địa chỉ:
-                                {{ $hoSo->Employers->address }}
-                            </li>
-                            <li><i class="fa fa-angle-right text-primary me-2"></i>Số điện thoại: <a
-                                    href="tel:{{ $hoSo->Employers->phone }}">{{ $hoSo->Employers->phone }}</a>
-                            </li>
-                            <li><i class="fa fa-angle-right text-primary me-2"></i>Email: <a
-                                    href="mailto:{{ $hoSo->Employers->email }}">{{ $hoSo->Employers->email }}</a>
-                            </li>
-                        </ul>
-                    </div> --}}
+                    <div class="mb-5">
+                        @if ($hoSo->kinh_nghiem != '')
+                            <h4 class="">Kinh nghiệm</h4>
+                            <ul class="list-unstyled">
+                                @foreach (json_decode($hoSo->kinh_nghiem) as $kn)
+                                    <li class="pt-3">
+                                        <h5>Tên công ty: {{ $kn->ten_cong_ty }}</h5>
+                                    </li>
+                                    <li><i class="fas fa-user-plus text-primary me-2"></i>Chức danh:
+                                        {{ $kn->chuc_danh }}
+                                    </li>
+                                    <li><i class="fas fa-calendar-alt text-primary me-2"></i>Thời gian làm việc:
+                                        {{ $kn->thoi_gian_lam }}
+                                    </li>
+                                    <li><i class="fas fa-feather text-primary me-2"></i>Mô tả: {{ $kn->description }}
+                                    </li>
+                                    <li><i class="fas fa-trophy text-primary me-2"></i>Thành tích: {{ $kn->thanh_tich }}
+                                    </li>
+                                @endforeach
+                            </ul>
+                        @endif
+                        <div class="row">
 
-                    <div class="">
-                        <h4 class="mb-4">Apply For The Job</h4>
-                        <form method="POST" action="{{ route('recruitment.apply.for.email', $hoSo->id) }}"
-                            class="needs-validation" novalidate enctype="multipart/form-data">
-                            @csrf
-                            <div class="row g-3">
-                                <div class="col-12 col-sm-6">
-                                    <input type="text" name="name" class="form-control" value="{{ old('name') }}"
-                                        placeholder="Your Name" required>
-                                </div>
-                                <div class="col-12 col-sm-6">
-                                    <input type="email" class="form-control" name="email" value="{{ old('email') }}"
-                                        placeholder="Your Email" required>
-                                </div>
-                                <div class="col-12 col-sm-6">
-                                    <input type="text" class="form-control" name="portfolio"
-                                        value="{{ old('portfolio') }}" placeholder="Portfolio Website">
-                                </div>
-                                <div class="col-12 col-sm-6">
-                                    <input type="file" name="file" class="form-control bg-white" required>
-                                </div>
-                                <div class="col-12">
-                                    <textarea class="form-control" rows="5" name="content" placeholder="Coverletter">{{ old('content') }}</textarea>
-                                </div>
-                                <div class="col-12">
-                                    <button class="btn btn-primary w-100" type="submit">Apply Now</button>
-                                </div>
+                            <div class="col-md-6">
+                                @if ($hoSo->tin_hoc != '')
+                                    @php
+                                        $trinh_do = json_decode($hoSo->tin_hoc);
+                                    @endphp
+                                    <h4 class="mb-3">Tin học</h4>
+                                    <ul class="list-unstyled">
+                                        @if (isset($trinh_do->trinh_do) && $trinh_do->trinh_do != '')
+                                            @foreach (Helper::getTinHoc() as $stt => $tin_hoc)
+                                                <li class="mb-2">
+                                                    <p>
+                                                        <i
+                                                            class="fa fa-angle-right text-primary me-2"></i>{{ $tin_hoc['name'] }}:
+                                                    </p>
+                                                    @foreach (config('thongtintuyendung.trinhdo') as $key => $value)
+                                                        @if ($trinh_do->trinh_do[$stt] == $value['value'])
+                                                            <div class="progress" style="margin-top: -10px">
+                                                                @switch($trinh_do->trinh_do[$stt])
+                                                                    @case(0)
+                                                                        <div class="progress-bar" style="width: 100%;"
+                                                                            role="progressbar" aria-valuenow="100"aria-valuemin="0"
+                                                                            aria-valuemax="100">{{ $value['name'] }}</div>
+                                                                    @break
+
+                                                                    @case(1)
+                                                                        <div class="progress-bar" style="width: 75%;"
+                                                                            role="progressbar" aria-valuenow="75" aria-valuemin="0"
+                                                                            aria-valuemax="100">{{ $value['name'] }}</div>
+                                                                    @break
+
+                                                                    @case(2)
+                                                                        <div class="progress-bar" style="width: 50%;"
+                                                                            role="progressbar" aria-valuenow="50" aria-valuemin="0"
+                                                                            aria-valuemax="100">{{ $value['name'] }}</div>
+                                                                    @break
+
+                                                                    @case(3)
+                                                                        <div class="progress-bar" style="width: 25%;"
+                                                                            role="progressbar" aria-valuenow="25" aria-valuemin="0"
+                                                                            aria-valuemax="100">{{ $value['name'] }}</div>
+                                                                    @break
+
+                                                                    @default
+                                                                        <div class="progress-bar" style="width: 0px;"
+                                                                            role="progressbar" aria-valuenow="0" aria-valuemin="0"
+                                                                            aria-valuemax="100">{{ $value['name'] }}</div>
+                                                                @endswitch
+                                                            </div>
+                                                        @endif
+                                                    @endforeach
+                                                </li>
+                                            @endforeach
+                                        @endif
+                                        @if ($trinh_do->phan_mem_khac != '')
+                                            <li>
+                                                <p>Phần mềm khác: {{ $trinh_do->phan_mem_khac }}</p>
+                                            </li>
+                                        @endif
+                                    </ul>
+                                @endif
+                                @if ($hoSo->ngoai_ngu != '')
+                                    <h4 class="mb-3">Ngoại ngữ</h4>
+                                    <ul class="list-unstyled">
+                                        @foreach (json_decode($hoSo->ngoai_ngu) as $nn)
+                                            <li class="mb-2">
+                                                <p>
+                                                    <i
+                                                        class="fa fa-angle-right text-primary me-2"></i>{{ $nn->ten_ngoai_ngu }}:
+                                                </p>
+                                                @foreach (config('thongtintuyendung.trinhdo') as $key => $value)
+                                                    @if ($nn->trinh_do == $value['value'])
+                                                        <div class="progress" style="margin-top: -10px">
+                                                            @switch($nn->trinh_do)
+                                                                @case(0)
+                                                                    <div class="progress-bar" style="width: 100%;"
+                                                                        role="progressbar" aria-valuenow="100"aria-valuemin="0"
+                                                                        aria-valuemax="100">{{ $value['name'] }}</div>
+                                                                @break
+
+                                                                @case(1)
+                                                                    <div class="progress-bar" style="width: 75%;" role="progressbar"
+                                                                        aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">
+                                                                        {{ $value['name'] }}</div>
+                                                                @break
+
+                                                                @case(2)
+                                                                    <div class="progress-bar" style="width: 50%;" role="progressbar"
+                                                                        aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
+                                                                        {{ $value['name'] }}</div>
+                                                                @break
+
+                                                                @case(3)
+                                                                    <div class="progress-bar" style="width: 25%;"
+                                                                        role="progressbar" aria-valuenow="25" aria-valuemin="0"
+                                                                        aria-valuemax="100">{{ $value['name'] }}</div>
+                                                                @break
+
+                                                                @default
+                                                                    <div class="progress-bar" style="width: 0px;"
+                                                                        role="progressbar" aria-valuenow="0" aria-valuemin="0"
+                                                                        aria-valuemax="100">{{ $value['name'] }}</div>
+                                                            @endswitch
+                                                        </div>
+                                                    @endif
+                                                @endforeach
+                                            </li>
+                                        @endforeach
+
+                                    </ul>
+                                @endif
                             </div>
-                        </form>
+
+
+                            @if ($hoSo->bang_cap != '')
+                                <div class="col-md-6">
+
+                                    <h4 class="mb-3">Bằng cấp / Chứng Chỉ</h4>
+                                    <div class="owl-carousel owl-theme owl-bang-cap">
+                                        @foreach (json_decode($hoSo->bang_cap) as $bc)
+                                            <figure class="snip0019">
+                                                <img src="/upload/images/hosoxinviec/thumb/{{ $bc->photo }}"
+                                                    alt="sample12" />
+                                                <figcaption>
+                                                    <div>
+                                                        <h2> {{ $bc->name }}</h2>
+                                                    </div>
+                                                    <div>
+                                                        <p>
+                                                            {{-- <i class="fab fa-accusoft"></i> --}}
+                                                            <i class="far fa-building text-primary me-2"></i>
+                                                            {{ $bc->don_vi }} <br>
+                                                            <i class="fab fa-accusoft text-primary me-2"></i>
+                                                            {{ $bc->chuyen_nganh }} <br>
+                                                            <i class="fa fa-angle-right text-primary me-2"></i>
+                                                            {{ $bc->loai_tot_nghiep }} <br>
+                                                            <i class="fa fa-angle-right text-primary me-2"></i>
+                                                            {{ $bc->thoi_gian }}
+                                                        </p>
+                                                    </div>
+                                                    <a href="/upload/images/hosoxinviec/large/{{ $bc->photo }}"
+                                                        data-fancybox="gallery" data-caption="{{ $bc->name }}"></a>
+                                                </figcaption>
+                                            </figure>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
                     </div>
                 </div>
-
                 <div class="col-lg-4">
                     <div class="bg-light rounded p-5 mb-4 wow slideInUp" data-wow-delay="0.1s">
-                        <h4 class="mb-4">Job Summery</h4>
+                        <h4 class="mb-4">Thông tin ứng viên</h4>
                         {{-- <p><i class="fa fa-angle-right text-primary me-2"></i></p> --}}
 
                         <p><i class="fa fa-angle-right text-primary me-2"></i>View: {{ $hoSo->view }}</p>
-                        <p><i class="fa fa-angle-right text-primary me-2"></i>Published On:
-                            {{ Helper::formatDate($hoSo->created_at) }}</p>
-                        <p><i class="fa fa-angle-right text-primary me-2"></i>Số lượng tuyển:
-                            {{ $hoSo->so_luong }}
+                        <p><i class="fa fa-angle-right text-primary me-2"></i>Cập nhật:
+                            {{ Helper::formatDate($hoSo->updated_at) }}</p>
+                        <p><i class="fa fa-angle-right text-primary me-2"></i>Email:
+                            {{ $hoSo->users->email }}
                         </p>
-                        <p class="m-0"><i class="fa fa-angle-right text-primary me-2"></i>Date Line:
-                            {{ $hoSo->han_nop }}</p>
+                        <p class="m-0"><i class="fa fa-angle-right text-primary me-2"></i>Phone:
+                            {{ $hoSo->users->phone }}</p>
                     </div>
-                    <div class="bg-light rounded p-5 wow slideInUp" data-wow-delay="0.1s">
-                        <h4 class="mb-4">Company Detail</h4>
-                        <p class="m-0">{{ $hoSo->description }}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Modal -->
-        <div class="modal fade" id="applyModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Nộp Hồ Sơ</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <form id="form_apply">
-                        @csrf
-                        <div class="modal-body">
-                            @if (auth()->check() && auth()->user()->type == 1)
-                                @foreach ($hoso_list as $key => $item)
-                                    <div class="form-check">
-                                        <input class="form-check-input" value="{{ $item->id }}"
-                                            {{ $key == 0 ? 'checked' : '' }} type="radio" name="hoso_id"
-                                            id="hoso_{{ $item->id }}">
-                                        <label class="form-check-label" for="hoso_{{ $item->id }}">
-                                            {{ $item->vi_tri }}
-                                        </label>
-                                    </div>
-                                @endforeach
-                            @elseif (auth()->check() && auth()->user()->type == 2)
-                                <p>Chức năng này chỉ dành cho người tìm việc</p>
-                            @else
-                                <p>Vui lòng <a href="{{ route('seeker.login') }}" class="tooltip-test"
-                                        title="Đăng nhập">đăng
-                                        nhập</a> để tiếp tục.</p>
-                            @endif
+                    @if ($hoSo->description != '')
+                        <div class="bg-light rounded p-5 wow slideInUp" data-wow-delay="0.1s">
+                            <h4 class="mb-4">Mục tiêu nghề nghiệp</h4>
+                            <p class="m-0">{{ $hoSo->description }}</p>
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            @if (auth()->check() && auth()->user()->type == 1)
-                                <button type="button" id="btn_apply" class="btn btn-primary">Gửi</button>
-                            @endif
-                        </div>
-                    </form>
+                    @endif
                 </div>
             </div>
         </div>
@@ -212,51 +266,48 @@
         </script>
     @endif
     <script>
+        $('.owl-bang-cap').owlCarousel({
+            loop: true,
+            margin: 10,
+            nav: false,
+            autoplay: true,
+            autoplayTimeout: 5000,
+            autoplayHoverPause: true,
+            responsive: {
+                0: {
+                    items: 1
+                },
+                600: {
+                    items: 1
+                },
+                1000: {
+                    items: 1
+                }
+            }
+        })
         $(document).ready(function() {
 
-            $('#btn_apply').click(function() {
-                var form_data = $('#form_apply').serialize();
-
-                $.ajax({
-                    url: "{{ route('recruitment.apply', $hoSo->id) }}",
-                    type: "POST",
-                    data: form_data,
-                    success: function(data) {
-                        if (data.status == 1) {
-                            Successnotification(data.msg);
-                            $('#applyModal').modal('hide')
-                            $('.show_btn_apply').html(
-                                '<button type="button" class="btn btn-primary">Đã ứng tuyển</button>'
-                                );
-                        } else {
-                            Errornotification(data.msg);
-                        }
-                    }
-                })
-            })
-
-            $(document).on("click", "#add_wishlist", function(event) {
+            $(document).on("click", "#add_flow", function(event) {
 
                 const id = "{{ $hoSo->id }}";
                 const vi_tri = "{{ $hoSo->vi_tri }}";
                 const url =
-                    "{{ route('recruitment.job.detail', ['slug' => $hoSo->slug, 'id' => $hoSo->id]) }}";
+                    "{{ route('hoso.detail', ['slug' => $hoSo->slug, 'id' => $hoSo->id]) }}";
                 const item = {
                     'id': id,
                     'vi_tri': vi_tri,
-                    'employer': employer_name,
                     'user_id': "{{ auth()->guard('web')->check()? auth()->guard('web')->user()->id: '' }}",
                     'url': url
                 }
 
-                if ($('#icon_wishlist').hasClass('far')) {
-                    if (localStorage.getItem('wishlist_recruitment') == null) {
-                        localStorage.setItem('wishlist_recruitment', '[]');
+                if ($('#icon_flow').hasClass('far')) {
+                    if (localStorage.getItem('flow_user') == null) {
+                        localStorage.setItem('flow_user', '[]');
                     }
 
-                    let old_data = JSON.parse(localStorage.getItem('wishlist_recruitment'));
+                    let old_data = JSON.parse(localStorage.getItem('flow_user'));
                     $.ajax({
-                        url: "{{ route('recruitment.wishlist') }}",
+                        url: "{{ route('hoso.flow.user') }}",
                         type: "GET",
                         data: {
                             id: id,
@@ -264,7 +315,7 @@
                         },
                         success: function(data) {
                             if (data.status == 1) {
-                                $('#icon_wishlist').addClass('fas').removeClass('far');
+                                $('#icon_flow').addClass('fas').removeClass('far');
                                 if (old_data.length <= 50) {
                                     old_data.push(item);
 
@@ -272,13 +323,13 @@
                                     alert('Đã đạt giới hạn lưu')
                                 }
 
-                                localStorage.setItem('wishlist_recruitment', JSON.stringify(
+                                localStorage.setItem('flow_user', JSON.stringify(
                                     old_data));
                             } else if (data.status == 0) {
                                 Errornotification(data.msg);
                             } else {
                                 if (confirm(data.msg) == true) {
-                                    location.href = "{{ route('seeker.login') }}";
+                                    location.href = "{{ route('employer.login') }}";
                                 } else {
                                     return false;
                                 }
@@ -286,9 +337,9 @@
                             }
                         }
                     });
-                } else if ($('#icon_wishlist').hasClass('fas')) {
+                } else if ($('#icon_flow').hasClass('fas')) {
                     $.ajax({
-                        url: "{{ route('recruitment.wishlist') }}",
+                        url: "{{ route('hoso.flow.user') }}",
                         type: "GET",
                         data: {
                             id: id,
@@ -296,9 +347,9 @@
                         },
                         success: function(data) {
                             if (data.status == 1) {
-                                $('#icon_wishlist').addClass('far').removeClass('fas');
+                                $('#icon_flow').addClass('far').removeClass('fas');
                                 let data1 = JSON.parse(localStorage.getItem(
-                                    'wishlist_recruitment'));
+                                    'flow_user'));
                                 let matches = $.grep(data1, function(data) {
                                     return data.id == id;
                                 });
@@ -308,14 +359,14 @@
                                         0]) //tim vi tri phan tu can xoa
                                     var new_arr = data1.splice(index,
                                         1); //xoa phan tu vua tim dk tai vi tri do
-                                    localStorage.setItem('wishlist_recruitment', JSON.stringify(
+                                    localStorage.setItem('flow_user', JSON.stringify(
                                         data1));
                                 }
                             } else if (data.status == 0) {
                                 Errornotification(data.msg);
                             } else {
                                 if (confirm(data.msg) == true) {
-                                    location.href = "{{ route('seeker.login') }}";
+                                    location.href = "{{ route('employer.login') }}";
                                 } else {
                                     return false;
                                 }

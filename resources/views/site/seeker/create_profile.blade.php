@@ -161,6 +161,18 @@
     </div>
 @endsection
 @push('script')
+@if (Session::has('type') && Session::get('type') == 'success')
+        <script>
+            var message = "{{ Session::get('flash_message') }}";
+
+            Successnotification(message);
+        </script>
+    @elseif (Session::has('type') && Session::get('type') == 'danger')
+        <script>
+            var message = "{{ Session::get('flash_message') }}";
+            Errornotification(message);
+        </script>
+    @endif
     <script>
         var dem = -1;
         var dem2 = -1;
@@ -269,38 +281,38 @@
             $('.province').select2();
         });
 
-        function readURL(input) {
-  if (input.files && input.files[0]) {
+//         function readURL(input) {
+//   if (input.files && input.files[0]) {
 
-    var reader = new FileReader();
+//     var reader = new FileReader();
 
-    reader.onload = function(e) {
-      $('.image-upload-wrap').hide();
+//     reader.onload = function(e) {
+//       $('.image-upload-wrap').hide();
 
-      $('.file-upload-image').attr('src', e.target.result);
-      $('.file-upload-content').show();
+//       $('.file-upload-image').attr('src', e.target.result);
+//       $('.file-upload-content').show();
 
-      $('.image-title').html(input.files[0].name);
-    };
+//       $('.image-title').html(input.files[0].name);
+//     };
 
-    reader.readAsDataURL(input.files[0]);
+//     reader.readAsDataURL(input.files[0]);
 
-  } else {
-    removeUpload();
-  }
-}
+//   } else {
+//     removeUpload();
+//   }
+// }
 
-function removeUpload() {
-  $('.file-upload-input').replaceWith($('.file-upload-input').clone());
-  $('.file-upload-content').hide();
-  $('.image-upload-wrap').show();
-}
-$('.image-upload-wrap').bind('dragover', function () {
-    $('.image-upload-wrap').addClass('image-dropping');
-  });
-  $('.image-upload-wrap').bind('dragleave', function () {
-    $('.image-upload-wrap').removeClass('image-dropping');
-});
+// function removeUpload() {
+//   $('.file-upload-input').replaceWith($('.file-upload-input').clone());
+//   $('.file-upload-content').hide();
+//   $('.image-upload-wrap').show();
+// }
+// $('.image-upload-wrap').bind('dragover', function () {
+//     $('.image-upload-wrap').addClass('image-dropping');
+//   });
+//   $('.image-upload-wrap').bind('dragleave', function () {
+//     $('.image-upload-wrap').removeClass('image-dropping');
+// });
 
     </script>
 @endpush
