@@ -40,7 +40,7 @@
                                 @foreach ($category_list as $key => $category)
                                     <div class="col-md-4">
                                         <label for="validationCustom04"
-                                            class="form-label">{{ $category->name }}</label>
+                                            class="form-label">{{ $category->title }}</label>
                                         <select class="form-select" id="validationCustom04" required
                                             name="information_id[]">
                                             <option selected disabled value="">Choose...</option>
@@ -124,7 +124,7 @@
                                                         @foreach (config('thongtintuyendung.trinhdo') as $key => $value)       
                                                         <div class="form-check form-check-inline">
                                                             <input class="form-check-input" type="radio" name="tin_hoc[trinh_do][{{$item['value']}}]" id="inlineRadio1"
-                                                                value="{{$value['value']}}">
+                                                                value="{{$value['value']}}" required>
                                                             <label class="form-check-label" for="inlineRadio1">{{$value['name']}}</label>
                                                         </div>
                                                         @endforeach
@@ -140,18 +140,6 @@
                             </div>
                         </div>
                     </div>
-
-                    {{-- <div class="col-12">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="invalidCheck" required>
-                            <label class="form-check-label" for="invalidCheck">
-                                Agree to terms and conditions
-                            </label>
-                            <div class="invalid-feedback">
-                                You must agree before submitting.
-                            </div>
-                        </div>
-                    </div> --}}
                     <div class="col-12 mt-3">
                         <button class="btn btn-primary" type="submit">Submit form</button>
                     </div>
@@ -161,18 +149,7 @@
     </div>
 @endsection
 @push('script')
-@if (Session::has('type') && Session::get('type') == 'success')
-        <script>
-            var message = "{{ Session::get('flash_message') }}";
-
-            Successnotification(message);
-        </script>
-    @elseif (Session::has('type') && Session::get('type') == 'danger')
-        <script>
-            var message = "{{ Session::get('flash_message') }}";
-            Errornotification(message);
-        </script>
-    @endif
+@include('site.inc.toast_noti')
     <script>
         var dem = -1;
         var dem2 = -1;

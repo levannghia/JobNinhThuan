@@ -1,5 +1,6 @@
 @extends('site.layout')
 @section('content')
+
     <div class="container-xxl py-5">
         <div class="container">
             <h1 class="text-center mb-5 wow fadeInUp" data-wow-delay="0.1s">Hoàn thiện hồ sơ</h1>
@@ -39,7 +40,7 @@
                                 @foreach ($category_list as $key => $category)
                                     <div class="col-md-4">
                                         <label for="validationCustom04"
-                                            class="form-label">{{ $category->name }}</label>
+                                            class="form-label">{{ $category->title }}</label>
                                         <select class="form-select" id="validationCustom04" required
                                             name="information_id[]">
                                             <option selected disabled value="">Choose...</option>
@@ -74,27 +75,27 @@
                                     <p class="card-title btn text-center delete-style btn-delete-kn" data-dem-kn="{{$key}}">DELETE</p>
                                     <div class="col-md-6">
                                     <label for="inputEmail4" class="form-label">Tên công ty / Tổ chức</label>
-                                    <input type="text" name="data[kinh_nghiem][{{$key}}][ten_cong_ty]" value="{{$item->ten_cong_ty}}" class="form-control" id="inputEmail4">
+                                    <input type="text" name="data[kinh_nghiem][{{$key}}][ten_cong_ty]" value="{{$item['ten_cong_ty']}}" class="form-control" id="inputEmail4">
                                   </div>
                                   <div class="col-md-6">
                                     <label for="inputPassword4" class="form-label">Chức danh</label>
-                                    <input type="text" name="data[kinh_nghiem][{{$key}}][chuc_danh]" value="{{$item->chuc_danh}}" class="form-control" id="inputPassword4">
+                                    <input type="text" name="data[kinh_nghiem][{{$key}}][chuc_danh]" value="{{$item['chuc_danh']}}" class="form-control" id="inputPassword4">
                                   </div>
                                   <div class="col-md-6">
                                     <label for="inputAddress" class="form-label">Thời gian làm việc</label>
-                                    <input type="text" name="data[kinh_nghiem][{{$key}}][thoi_gian_lam]" value="{{$item->thoi_gian_lam}}" class="form-control" id="inputAddress">
+                                    <input type="text" name="data[kinh_nghiem][{{$key}}][thoi_gian_lam]" value="{{$item['thoi_gian_lam']}}" class="form-control" id="inputAddress">
                                   </div>
                                   <div class="col-md-6">
                                     <label for="inputAddress2" class="form-label">Mức lương</label>
-                                    <input type="number" name="data[kinh_nghiem][{{$key}}][muc_luong]" value="{{$item->muc_luong}}" class="form-control" id="inputAddress2">
+                                    <input type="number" name="data[kinh_nghiem][{{$key}}][muc_luong]" value="{{$item['muc_luong']}}" class="form-control" id="inputAddress2">
                                   </div>
                                   <div class="col-md-6">
                                     <label for="inputCity" class="form-label">Mô tả công việc</label>
-                                    <textarea class="form-control" name="data[kinh_nghiem][{{$key}}][description]" id="exampleFormControlTextarea1" rows="3">{{$item->description}}</textarea>
+                                    <textarea class="form-control" name="data[kinh_nghiem][{{$key}}][description]" id="exampleFormControlTextarea1" rows="3">{{$item['description']}}</textarea>
                                   </div>
                                   <div class="col-md-6">
                                     <label for="inputState" class="form-label">Thành tích đạt được</label>
-                                    <textarea class="form-control" name="data[kinh_nghiem][{{$key}}][thanh_tich]" id="exampleFormControlTextarea1" rows="3">{{$item->thanh_tich}}</textarea>
+                                    <textarea class="form-control" name="data[kinh_nghiem][{{$key}}][thanh_tich]" id="exampleFormControlTextarea1" rows="3">{{$item['thanh_tich']}}</textarea>
                                   </div>
                                 </div>
                                 @endforeach
@@ -121,32 +122,32 @@
                                     <p class="card-title btn text-center delete-style btn-delete-bc" data-dem-bc="{{$key}}">DELETE</p>
                                     <div class="col-md-6">
                                     <label for="inputEmail4" class="form-label">Tên bằng cấp / chứng chỉ</label>
-                                    <input type="text" name="data[bang_cap][{{$key}}][name]" value="{{$item->name}}" class="form-control" id="inputEmail4">
+                                    <input type="text" name="data[bang_cap][{{$key}}][name]" value="{{$item['name']}}" class="form-control" id="inputEmail4">
                                   </div>
                                   <div class="col-md-6">
                                     <label for="inputPassword4" class="form-label">Trường / Đơn vị cấp </label>
-                                    <input type="text" name="data[bang_cap][{{$key}}][don_vi]" value="{{$item->don_vi}}" class="form-control" id="inputPassword4">
+                                    <input type="text" name="data[bang_cap][{{$key}}][don_vi]" value="{{$item['don_vi']}}" class="form-control" id="inputPassword4">
                                   </div>
                                   <div class="col-md-6">
                                     <label for="inputAddress" class="form-label">Thời gian</label>
-                                    <input type="text" name="data[bang_cap][{{$key}}][thoi_gian]" value="{{$item->thoi_gian}}" class="form-control" id="inputAddress">
+                                    <input type="text" name="data[bang_cap][{{$key}}][thoi_gian]" value="{{$item['thoi_gian']}}" class="form-control" id="inputAddress">
                                   </div>
                                   <div class="col-md-6">
                                     <label for="inputAddress2" class="form-label">Chuyên ngành</label>
-                                    <input type="text" name="data[bang_cap][{{$key}}][chuyen_nganh]" value="{{$item->chuyen_nganh}}" class="form-control" id="inputAddress2">
+                                    <input type="text" name="data[bang_cap][{{$key}}][chuyen_nganh]" value="{{$item['chuyen_nganh']}}" class="form-control" id="inputAddress2">
                                   </div>
                                   <div class="col-md-6">
                                     <label for="inputCity" class="form-label">Loại tốt nghiệp</label>
-                                    <input type="text" name="data[bang_cap][{{$key}}][loai]" class="form-control" value="{{$item->loai_tot_nghiep}}" id="inputAddress2">
+                                    <input type="text" name="data[bang_cap][{{$key}}][loai]" class="form-control" value="{{$item['loai_tot_nghiep']}}" id="inputAddress2">
                                   </div>
                                   
                                     <div class="col-md-6">
                                         <label for="formFile" class="form-label">Tải bằng cấp: &nbsp;</label><span class="kich-thuoc">(width: <?= $thumbsize->width ?>, height:  <?= $thumbsize->height ?>)</span>
                                         <input class="form-control" type="file" accept="image/*" name="data[bang_cap][{{$key}}][photo]" />
 
-                                        @if (isset($item->photo))
-                                            <input type="hidden" value="{{$item->photo}}" name="data[bang_cap][{{$key}}][photo_temp]">
-                                            <img style="padding-top: 10px;" src="/upload/images/hosoxinviec/thumb/{{$item->photo}}" class="img-fluid" alt="{{$item->name}}">
+                                        @if (isset($item['photo']))
+                                            <input type="hidden" value="{{$item['photo']}}" name="data[bang_cap][{{$key}}][photo_temp]">
+                                            <img style="padding-top: 10px;" src="/upload/{{$item['photo']}}" class="img-fluid" alt="{{$item['name']}}">
                                         @endif
                                         
                                     </div>
@@ -173,13 +174,13 @@
                                     <p class="card-title btn text-center delete-style btn-delete-nn" data-dem-nn="{{$stt}}">DELETE</p>
                                     <div class="input-group mb-3">
                                         <span class="input-group-text" id="basic-addon1">Ngoại ngữ</span>
-                                        <input type="text" class="form-control" value="{{$item->ten_ngoai_ngu}}" name="data[ngoai_ngu][{{$stt}}][ten_ngoai_ngu]" aria-label="Username" aria-describedby="basic-addon1">
+                                        <input type="text" class="form-control" value="{{$item['ten_ngoai_ngu']}}" name="data[ngoai_ngu][{{$stt}}][ten_ngoai_ngu]" aria-label="Username" aria-describedby="basic-addon1">
                                     </div>
                                     <div class="check-trinh-do">
                                         @foreach (config('thongtintuyendung.trinhdo') as $key => $value)       
                                         <div class="form-check form-check-inline">
                                             <input class="form-check-input" type="radio" name="data[ngoai_ngu][{{$stt}}][trinh_do]" id="inlineRadio1"
-                                                value="{{$value['value']}}" {{ $item->trinh_do == $value['value'] ? 'checked' : ''}}>
+                                                value="{{$value['value']}}" {{ $item['trinh_do'] == $value['value'] ? 'checked' : ''}}>
                                             <label class="form-check-label" for="inlineRadio1">{{$value['name']}}</label>
                                         </div>
                                         @endforeach
@@ -200,16 +201,15 @@
                         <div class="card-body">
                             <div class="tin-hoc">
                                 <div class="ngoai-ngu-child">
-                                                        
+                                    
                                                        @foreach (Helper::getTinHoc() as $stt => $item)
-                                                           
                                                        <div class="tin-hoc-box">
                                                         <label for="exampleFormControlInput1" style="margin-right: 30px;" class="form-label">{{$item['name']}}</label>
                                                         <div class="check-trinh-do">
-                                                        @foreach (config('thongtintuyendung.trinhdo') as $key => $value)       
+                                                        @foreach (config('thongtintuyendung.trinhdo') as $key => $value)
                                                         <div class="form-check form-check-inline">
                                                             <input class="form-check-input" type="radio" name="tin_hoc[trinh_do][{{$item['value']}}]"
-                                                                value="{{$value['value']}}" {{ isset($tin_hoc->trinh_do) && $tin_hoc->trinh_do[$stt] == $value['value'] ? 'checked' : ''}}>
+                                                                value="{{$value['value']}}" {{!empty($tin_hoc) && isset($tin_hoc['trinh_do']) && $tin_hoc['trinh_do'][$stt] == $value['value'] ? 'checked' : ''}} required>
                                                             <label class="form-check-label" for="inlineRadio1">{{$value['name']}}</label>
                                                         </div>
                                                         @endforeach
@@ -219,8 +219,9 @@
                                                     
                                                        <div class="input-group mb-3 mt-3">
                                                         <span class="input-group-text" id="basic-addon1">Phần mềm khác</span>
-                                                        <input type="text" value="{{$tin_hoc->phan_mem_khac}}" class="form-control" name="tin_hoc[phan_mem_khac]" aria-label="Username" aria-describedby="basic-addon1">
+                                                        <input type="text" value="{{isset($tin_hoc['phan_mem_khac']) && !empty($tin_hoc['phan_mem_khac']) ? $tin_hoc['phan_mem_khac'] : ''}}" class="form-control" name="tin_hoc[phan_mem_khac]" aria-label="Username" aria-describedby="basic-addon1">
                                                     </div>
+                                                    
                                                     </div>
                             </div>
                         </div>
@@ -246,18 +247,7 @@
     </div>
 @endsection
 @push('script')
-@if (Session::has('type') && Session::get('type') == 'success')
-        <script>
-            var message = "{{ Session::get('flash_message') }}";
-
-            Successnotification(message);
-        </script>
-    @elseif (Session::has('type') && Session::get('type') == 'danger')
-        <script>
-            var message = "{{ Session::get('flash_message') }}";
-            Errornotification(message);
-        </script>
-    @endif
+@include('site.inc.toast_noti')
     <script>
         
         const arr_kn = $("[data-dem-kn]").toArray();

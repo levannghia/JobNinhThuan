@@ -72,7 +72,7 @@
                                 </div>
                                 @foreach ($category_list as $key => $category)
                                     <div class="col-md-4">
-                                        <label for="validationCustom04" class="form-label">{{ $category->name }}</label>
+                                        <label for="validationCustom04" class="form-label">{{ $category->title }}</label>
                                         <select class="form-select" id="validationCustom04" required
                                             name="information_id[]">
                                             <option selected disabled value="">Choose...</option>
@@ -162,23 +162,13 @@
     </div>
 @endsection
 @push('script')
-    @if (Session::has('type') && Session::get('type') == 'success')
-        <script>
-            var message = "{{ Session::get('flash_message') }}";
-
-            Successnotification(message);
-        </script>
-    @elseif (Session::has('type') && Session::get('type') == 'danger')
-        <script>
-            var message = "{{ Session::get('flash_message') }}";
-            Errornotification(message);
-        </script>
-    @endif
+@include('site.inc.toast_noti')
     <script>
         $(document).ready(function() {
             $('.province').select2();
             $('#datetimepicker1').datetimepicker({
                 // inline: true,
+                format: 'DD/MM/YYYY HH:mm A',
                 sideBySide: true,
                 icons: {
                     time: "far fa-clock",

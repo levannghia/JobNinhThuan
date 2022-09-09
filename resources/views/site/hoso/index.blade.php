@@ -10,7 +10,7 @@
                         @csrf
                         @foreach ($category_search as $key => $item)
                             <div class="category-search">
-                                <h5>{{ $item->name }} <span
+                                <h5>{{ $item->title }} <span
                                         class="badge bg-primary">{{ count($item->informations) }}</span></h5>
                             </div>
                             <div class="scroll-category">
@@ -36,7 +36,7 @@
                                 <th scope="col">Vị trí ứng tuyển</th>
                                 <th scope="col">Khu vực</th>
                                 @foreach ($category_noibat as $item)
-                                    <th scope="col">{{ $item->name }}</th>
+                                    <th scope="col">{{ $item->title }}</th>
                                 @endforeach
                             </tr>
                         </thead>

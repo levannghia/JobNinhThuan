@@ -30,6 +30,33 @@ class Helper
         ];
     }
 
+    public static function getEXP()
+    {
+        return [
+            '' => 'Chọn hạng sử dụng',
+            eXP::Day => 'Ngày',
+            eXP::Month => 'Tháng',
+            eXP::Year => 'Năm'
+        ];
+    }
+
+    public static function getEXPValue($EXP)
+    {
+        switch ($EXP) {
+            case eXP::Day:
+                return 'Ngày';
+                break;
+
+            case eXP::Month:
+                return 'Tháng';
+                break;
+
+            default:
+                return 'Năm';
+                break;
+        }
+    }
+
     public static function getGender()
     {
         return [
@@ -50,6 +77,7 @@ class Helper
             case gender::Female:
                 return 'Nữ';
                 break;
+                
             default:
                 return 'Khác';
                 break;
@@ -88,17 +116,17 @@ class Helper
         }
     }
 
-    public static function getStatusValue($status)
+    public static function getStatusValue($status, $id = "")
     {
         switch ($status) {
             case constStatus::Lock:
-                return "Khóa";
+                return '<span class="badge bg-warning text-dark" data-status-id="' . $id . '" id="status-' . $id . '">Khóa</span';
                 break;
             case constStatus::Delete:
-                return "Thùng rác";
+                return '<span class="badge bg-danger">Thùng rác</span>';
                 break;
             default:
-                return "Kích hoạt";
+                return '<span class="badge bg-success" data-status-id="' . $id . '" id="status-' . $id . '">Kích hoạt</span>';
                 break;
         }
     }
@@ -115,7 +143,7 @@ class Helper
 
     public static function formatDate($date)
     {
-        return $date->format('d/m/Y');
+        return Carbon::parse($date)->format('d/m/Y');
     }
 
     public static function settings()
@@ -128,6 +156,21 @@ class Helper
             ->toArray();
 
         return $settings;
+    }
+
+    public static function checked($value)
+    {
+        switch ($value) {
+            case 1:
+                return 'checked';
+                break;
+            case 0:
+                return '';
+                break;
+            default:
+                return '';
+                break;
+        }
     }
 
     public static function getNameEmployer()
@@ -143,5 +186,13 @@ class Helper
                 return $name;
             }
         }
+    }
+
+    public static function formatCurrency($val, $symbol = 'vi_VN', $r = 0)
+    {
+        $amount = new \NumberFormatter($symbol, \NumberFormatter::CURRENCY);
+        $amount->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, $r);
+
+        return $amount->format($val);
     }
 }

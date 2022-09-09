@@ -43,7 +43,10 @@ class Recruitment extends Model
     public function hoSoXinViec(){
         return $this->belongsToMany(HoSoXinViec::class,'hosoxinviec_recruitment','hoso_id','recruitment_id');
     }
-
+    public function hoSoApply()
+    {
+        return $this->belongsToMany(HoSoXinViec::class,'user_recruitment','recruitment_id','hoso_id')->wherePivot('hoso_id','>','0')->wherePivot('recruitment_id','>','0')->withPivot('date_apply')->withTimestamps();
+    }
     // public function test($var = [])
     // {
     //     return $this->belongsToMany(Information::class,'recruitment_information','recruitment_id','information_id')

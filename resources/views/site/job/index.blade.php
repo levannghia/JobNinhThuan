@@ -9,7 +9,7 @@
                         @csrf
                         @foreach ($category_search as $key => $item)
                             <div class="category-search">
-                                <h5>{{ $item->name }} <span class="badge bg-primary">{{count($item->informations)}}</span></h5>
+                                <h5>{{ $item->title }} <span class="badge bg-primary">{{count($item->informations)}}</span></h5>
                             </div>
                             <div class="scroll-category">
                                 @foreach ($item->informations as $key2 => $information)

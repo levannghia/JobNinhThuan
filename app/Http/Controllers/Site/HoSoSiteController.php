@@ -16,15 +16,15 @@ class HoSoSiteController extends Controller
 
     public function index()
     {
-        $category_search = Category::where('search', 1)->where('status', 1)->where('type', '!=', 2)->orderBy('stt', 'ASC')->get();
-        $category_noibat = Category::where('noi_bat', 1)->where('status', 1)->where('type', '!=', 2)->orderBy('stt', 'ASC')->get();
+        $category_search = Category::where('search', 1)->where('status', 1)->where('type', '!=', 2)->orderBy('order', 'ASC')->get();
+        $category_noibat = Category::where('noi_bat', 1)->where('status', 1)->where('type', '!=', 2)->orderBy('order', 'ASC')->get();
         $hoso_list = HoSoXinViec::where('status', 1)->orderBy('stt', 'ASC')->get();
         return view('site.hoso.index', compact('category_search', 'hoso_list', 'category_noibat'));
     }
 
     public function hoSoDetail($slug, $id)
     {
-        $category_list = Category::with('informations')->where('status', 1)->where('type', 1)->orWhere('type', 0)->orderBy('stt', 'ASC')->get();
+        $category_list = Category::with('informations')->where('status', 1)->whereIn('type', [0,1])->orderBy('order', 'ASC')->get();
         $hoSo = HoSoXinViec::where('slug', $slug)->where('id', $id)->first();
 
         if ($hoSo) {
@@ -60,7 +60,7 @@ class HoSoSiteController extends Controller
     public function searchInformation(Request $request)
     {
         $data = '';
-        $category_noibat = Category::where('noi_bat', 1)->where('status', 1)->where('type', '!=', 2)->orderBy('stt', 'ASC')->get();
+        $category_noibat = Category::where('noi_bat', 1)->where('status', 1)->where('type', '!=', 2)->orderBy('order', 'ASC')->get();
 
         if ($request->information != null && is_array($request->information)) {
             $hoso_list = HoSoXinViec::where('hosoxinviec.status', 1)->distinct()->select('hosoxinviec.*')

@@ -12,4 +12,9 @@ class Information extends Model
     {
         return $this->belongsToMany(HoSoXinViec::class,'hosoxinviec_information','information_id','hosoxinviec_id');
     }
+
+    public function categories()
+    {
+        return $this->belongsTo(Category::class,'category_id');
+    }
 }

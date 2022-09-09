@@ -13,6 +13,12 @@ class tinHoc{
     const Outlook = 3;
 }
 
+class eXP{
+    const Day = 0;
+    const Month = 1;
+    const Year = 2;
+}
+
 Class gender{
     const Male = 1;
     const Female = 2;

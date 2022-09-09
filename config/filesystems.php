@@ -35,10 +35,18 @@ return [
             'root' => storage_path('app'),
         ],
 
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
             'url' => env('APP_URL').'/storage',
+            'visibility' => 'public',
+        ],
+        
+        'media' => [
+            'driver' => 'local',
+            'root' => public_path('upload'),
+            'url' => env('APP_URL') . '/upload',
             'visibility' => 'public',
         ],
 
@@ -51,6 +59,13 @@ return [
             'url' => env('AWS_URL'),
             'endpoint' => env('AWS_ENDPOINT'),
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
+        ],
+        // Additional code
+        'admin' => [
+            'driver'     => 'local',
+            'root'       => public_path('upload'),
+            'visibility' => 'public',
+            'url' => env('APP_URL') . '/upload',
         ],
 
     ],

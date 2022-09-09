@@ -13,7 +13,7 @@
                                 alt="{{ $hoSo->users->name }}" style="width: 80px; height: 80px;">
                         @else
                             <img class="flex-shrink-0 img-fluid border rounded"
-                                src="/upload/images/seeker/thumb/{{ $hoSo->users->photo }}"
+                                src="/upload/{{ $hoSo->users->photo }}"
                                 alt="{{ $hoSo->users->name }}" style="width: 80px; height: 80px;">
                         @endif
                         <div class="text-start ps-4">
@@ -33,7 +33,7 @@
                                 @foreach ($category->informations as $info)
                                     @if ($hoSo->informations->contains('id', $info->id))
                                         <div class="col-md-6 mb-3">
-                                            <h5>{{ $category->name }}</h5>
+                                            <h5>{{ $category->title }}</h5>
                                             <span class="text-truncate me-3"><i
                                                     class="fa fa-angle-right text-primary me-2"></i>{{ $info->name }}</span>
                                         </div>
@@ -58,19 +58,19 @@
                         @if ($hoSo->kinh_nghiem != '')
                             <h4 class="">Kinh nghiệm</h4>
                             <ul class="list-unstyled">
-                                @foreach (json_decode($hoSo->kinh_nghiem) as $kn)
+                                @foreach ($hoSo->kinh_nghiem as $kn)
                                     <li class="pt-3">
-                                        <h5>Tên công ty: {{ $kn->ten_cong_ty }}</h5>
+                                        <h5>Tên công ty: {{ $kn['ten_cong_ty'] }}</h5>
                                     </li>
                                     <li><i class="fas fa-user-plus text-primary me-2"></i>Chức danh:
-                                        {{ $kn->chuc_danh }}
+                                        {{ $kn['chuc_danh'] }}
                                     </li>
                                     <li><i class="fas fa-calendar-alt text-primary me-2"></i>Thời gian làm việc:
-                                        {{ $kn->thoi_gian_lam }}
+                                        {{ $kn['thoi_gian_lam'] }}
                                     </li>
-                                    <li><i class="fas fa-feather text-primary me-2"></i>Mô tả: {{ $kn->description }}
+                                    <li><i class="fas fa-feather text-primary me-2"></i>Mô tả: {{ $kn['description'] }}
                                     </li>
-                                    <li><i class="fas fa-trophy text-primary me-2"></i>Thành tích: {{ $kn->thanh_tich }}
+                                    <li><i class="fas fa-trophy text-primary me-2"></i>Thành tích: {{ $kn['thanh_tich'] }}
                                     </li>
                                 @endforeach
                             </ul>
@@ -80,11 +80,11 @@
                             <div class="col-md-6">
                                 @if ($hoSo->tin_hoc != '')
                                     @php
-                                        $trinh_do = json_decode($hoSo->tin_hoc);
+                                        $trinh_do = $hoSo->tin_hoc;
                                     @endphp
                                     <h4 class="mb-3">Tin học</h4>
                                     <ul class="list-unstyled">
-                                        @if (isset($trinh_do->trinh_do) && $trinh_do->trinh_do != '')
+                                        @if (isset($trinh_do['trinh_do']) && $trinh_do['trinh_do'] != '')
                                             @foreach (Helper::getTinHoc() as $stt => $tin_hoc)
                                                 <li class="mb-2">
                                                     <p>
@@ -92,9 +92,9 @@
                                                             class="fa fa-angle-right text-primary me-2"></i>{{ $tin_hoc['name'] }}:
                                                     </p>
                                                     @foreach (config('thongtintuyendung.trinhdo') as $key => $value)
-                                                        @if ($trinh_do->trinh_do[$stt] == $value['value'])
+                                                        @if ($trinh_do['trinh_do'][$stt] == $value['value'])
                                                             <div class="progress" style="margin-top: -10px">
-                                                                @switch($trinh_do->trinh_do[$stt])
+                                                                @switch($trinh_do['trinh_do'][$stt])
                                                                     @case(0)
                                                                         <div class="progress-bar" style="width: 100%;"
                                                                             role="progressbar" aria-valuenow="100"aria-valuemin="0"
@@ -130,9 +130,9 @@
                                                 </li>
                                             @endforeach
                                         @endif
-                                        @if ($trinh_do->phan_mem_khac != '')
+                                        @if ($trinh_do['phan_mem_khac'] != '')
                                             <li>
-                                                <p>Phần mềm khác: {{ $trinh_do->phan_mem_khac }}</p>
+                                                <p>Phần mềm khác: {{ $trinh_do['phan_mem_khac'] }}</p>
                                             </li>
                                         @endif
                                     </ul>
@@ -140,16 +140,15 @@
                                 @if ($hoSo->ngoai_ngu != '')
                                     <h4 class="mb-3">Ngoại ngữ</h4>
                                     <ul class="list-unstyled">
-                                        @foreach (json_decode($hoSo->ngoai_ngu) as $nn)
+                                        @foreach ($hoSo->ngoai_ngu as $nn)
                                             <li class="mb-2">
                                                 <p>
-                                                    <i
-                                                        class="fa fa-angle-right text-primary me-2"></i>{{ $nn->ten_ngoai_ngu }}:
+                                                    <i class="fa fa-angle-right text-primary me-2"></i>{{ $nn['ten_ngoai_ngu'] }}:
                                                 </p>
                                                 @foreach (config('thongtintuyendung.trinhdo') as $key => $value)
-                                                    @if ($nn->trinh_do == $value['value'])
+                                                    @if ($nn['trinh_do'] == $value['value'])
                                                         <div class="progress" style="margin-top: -10px">
-                                                            @switch($nn->trinh_do)
+                                                            @switch($nn['trinh_do'])
                                                                 @case(0)
                                                                     <div class="progress-bar" style="width: 100%;"
                                                                         role="progressbar" aria-valuenow="100"aria-valuemin="0"
@@ -195,29 +194,29 @@
 
                                     <h4 class="mb-3">Bằng cấp / Chứng Chỉ</h4>
                                     <div class="owl-carousel owl-theme owl-bang-cap">
-                                        @foreach (json_decode($hoSo->bang_cap) as $bc)
+                                        @foreach ($hoSo->bang_cap as $bc)
                                             <figure class="snip0019">
-                                                <img src="/upload/images/hosoxinviec/thumb/{{ $bc->photo }}"
+                                                <img src="/upload/{{ $bc['photo'] }}"
                                                     alt="sample12" />
                                                 <figcaption>
                                                     <div>
-                                                        <h2> {{ $bc->name }}</h2>
+                                                        <h2> {{ $bc['name'] }}</h2>
                                                     </div>
                                                     <div>
                                                         <p>
                                                             {{-- <i class="fab fa-accusoft"></i> --}}
                                                             <i class="far fa-building text-primary me-2"></i>
-                                                            {{ $bc->don_vi }} <br>
+                                                            {{ $bc['don_vi'] }} <br>
                                                             <i class="fab fa-accusoft text-primary me-2"></i>
-                                                            {{ $bc->chuyen_nganh }} <br>
+                                                            {{ $bc['chuyen_nganh'] }} <br>
                                                             <i class="fa fa-angle-right text-primary me-2"></i>
-                                                            {{ $bc->loai_tot_nghiep }} <br>
+                                                            {{ $bc['loai_tot_nghiep'] }} <br>
                                                             <i class="fa fa-angle-right text-primary me-2"></i>
-                                                            {{ $bc->thoi_gian }}
+                                                            {{ $bc['thoi_gian'] }}
                                                         </p>
                                                     </div>
-                                                    <a href="/upload/images/hosoxinviec/large/{{ $bc->photo }}"
-                                                        data-fancybox="gallery" data-caption="{{ $bc->name }}"></a>
+                                                    <a href="/upload/{{ $bc['photo'] }}"
+                                                        data-fancybox="gallery" data-caption="{{ $bc['name'] }}"></a>
                                                 </figcaption>
                                             </figure>
                                         @endforeach

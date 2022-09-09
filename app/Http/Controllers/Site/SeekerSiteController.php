@@ -47,7 +47,7 @@ class SeekerSiteController extends Controller
 
     public function createProfile()
     {
-        $category_list = Category::with('informations')->where('status', 1)->where('type', 1)->orWhere('type', 0)->orderBy('stt', 'ASC')->get();
+        $category_list = Category::with('informations')->where('status', 1)->whereIn('type', [0,1])->orderBy('order', 'ASC')->get();
         $province_list = Province::get();
         $setting = Helper::settings();
         return view('site.seeker.create_profile', compact('category_list', 'province_list', 'setting'));
@@ -88,11 +88,6 @@ class SeekerSiteController extends Controller
             $validator2 = Validator::make($request->all(), $rules2);
             if ($validator2->fails()) {
                 return back()->with(["type" => "danger", "flash_message" => "Mật khẩu không giống nhau"]);
-                // return response()->json([
-                //     'status' => 0,
-                //     'code' => 500,
-                //     'msg' => $validator2->errors()->messages(),
-                // ]);
             }
             $current_password = auth()->guard('web')->user()->password;
             if (Hash::check($request->old_password, $current_password)) {
@@ -111,6 +106,17 @@ class SeekerSiteController extends Controller
         $user->date_of_birth = $request->date_of_birth;
 
         if ($request->hasFile('photo')) {
+            if (!empty($user->photo)) {
+                $thumb_img = 'upload/images/seeker/thumb/' . $user->photo;
+                if (file_exists($thumb_img)) {
+                    unlink($thumb_img);
+                }
+
+                $large_img = 'upload/images/seeker/large/' . $user->photo;
+                if (file_exists($large_img)) {
+                    unlink($large_img);
+                }
+            }
             $file = $request->photo;
             $file_name = Str::slug($file->getClientOriginalName(), "-") . "-" . time() . "." . $file->getClientOriginalExtension();
             //resize file befor to upload large
@@ -121,9 +127,9 @@ class SeekerSiteController extends Controller
                 $image_resize->save('upload/images/seeker/thumb/' . $file_name);
             }
             // close upload image
-            $file->move("upload/images/seeker/large/", $file_name);
+            // $file->move("upload/images/seeker/thumb/", $file_name);
 
-            $user->photo = $file_name;
+            $user->photo = "images/seeker/thumb/".$file_name;
         }
 
 
@@ -158,9 +164,9 @@ class SeekerSiteController extends Controller
             $hoSoXinViec->status = 1;
             $hoSoXinViec->slug = Str::slug($request->vitri);
             $hoSoXinViec->description = $request->description;
-            $hoSoXinViec->kinh_nghiem = !empty($request->data['kinh_nghiem']) ? json_encode($request->data['kinh_nghiem']) : '';
-            $hoSoXinViec->ngoai_ngu = !empty($request->data['ngoai_ngu']) ? json_encode($request->data['ngoai_ngu']) : '';
-            $hoSoXinViec->tin_hoc = !empty($request->tin_hoc) ? json_encode($request->tin_hoc) : '';
+            $hoSoXinViec->kinh_nghiem = !empty($request->data['kinh_nghiem']) ? $request->data['kinh_nghiem'] : '';
+            $hoSoXinViec->ngoai_ngu = !empty($request->data['ngoai_ngu']) ? $request->data['ngoai_ngu'] : '';
+            $hoSoXinViec->tin_hoc = !empty($request->tin_hoc) ? $request->tin_hoc : '';
 
             $bang_cap = !empty($request->data['bang_cap']) ? $request->data['bang_cap'] : '';
             $bc_arr = array();
@@ -193,7 +199,7 @@ class SeekerSiteController extends Controller
                                         $image_resize->save('upload/images/hosoxinviec/thumb/' . $file_name);
                                     }
                                     // close upload image
-                                    $file->move("upload/images/hosoxinviec/large/", $file_name);
+                                    //$file->move("upload/images/hosoxinviec/large/", $file_name);
 
                                     // $options = json_encode([
                                     //     "name" => $file_name,
@@ -203,7 +209,7 @@ class SeekerSiteController extends Controller
                                     // ]);
 
 
-                                    $bc_arr[$key]['photo'] = $file_name;
+                                    $bc_arr[$key]['photo'] = "images/hosoxinviec/thumb/".$file_name;
                                 } else {
                                     return back()->with(["type" => "danger", "flash_message" => "Chỉ được up file có kích thước nhỏ hơn 7mb"]);
                                 }
@@ -216,7 +222,7 @@ class SeekerSiteController extends Controller
                     }
                 }
 
-                $hoSoXinViec->bang_cap = json_encode($bc_arr);
+                $hoSoXinViec->bang_cap = $bc_arr;
             }
             $hoSoXinViec->save();
             $hoSoXinViec->informations()->attach($request->information_id);
@@ -232,15 +238,15 @@ class SeekerSiteController extends Controller
     public function editProfile($slug, $id)
     {
         $setting = Helper::settings();
-        $category_list = Category::with('informations')->where('status', 1)->where('type', 1)->orWhere('type', 0)->orderBy('stt', 'ASC')->get();
+        $category_list = Category::with('informations')->where('status', 1)->whereIn('type', [0,1])->orderBy('order', 'ASC')->get();
         $province_list = Province::get();
         $hoSoXinViec = HoSoXinViec::with('provinces', 'informations')->where('slug', $slug)->where('id', $id)->first();
-
+       
         if (!empty($hoSoXinViec)) {
-            $tin_hoc = json_decode($hoSoXinViec->tin_hoc);
-            $bang_cap = json_decode($hoSoXinViec->bang_cap);
-            $ngoai_ngu = json_decode($hoSoXinViec->ngoai_ngu);
-            $kinh_nghiem = json_decode($hoSoXinViec->kinh_nghiem);
+            $tin_hoc = $hoSoXinViec->tin_hoc;
+            $bang_cap = $hoSoXinViec->bang_cap;
+            $ngoai_ngu = $hoSoXinViec->ngoai_ngu;
+            $kinh_nghiem = $hoSoXinViec->kinh_nghiem;
 
             return view('site.seeker.edit_profile', compact('hoSoXinViec', 'setting', 'province_list', 'category_list', 'tin_hoc', 'bang_cap', 'ngoai_ngu', 'kinh_nghiem'));
         } else {
@@ -268,11 +274,11 @@ class SeekerSiteController extends Controller
             $hoSoXinViec->slug = Str::slug($request->vitri);
             $hoSoXinViec->description = $request->description;
             $hoSoXinViec->updated_at = Carbon::now();
-            $hoSoXinViec->kinh_nghiem = !empty($request->data['kinh_nghiem']) ? json_encode($request->data['kinh_nghiem']) : '';
-            $hoSoXinViec->ngoai_ngu = !empty($request->data['ngoai_ngu']) ? json_encode($request->data['ngoai_ngu']) : '';
-            $hoSoXinViec->tin_hoc = !empty($request->tin_hoc) ? json_encode($request->tin_hoc) : '';
+            $hoSoXinViec->kinh_nghiem = !empty($request->data['kinh_nghiem']) ? $request->data['kinh_nghiem'] : '';
+            $hoSoXinViec->ngoai_ngu = !empty($request->data['ngoai_ngu']) ? $request->data['ngoai_ngu'] : '';
+            $hoSoXinViec->tin_hoc = !empty($request->tin_hoc) ? $request->tin_hoc : '';
             if ($hoSoXinViec->bang_cap != '') {
-                $data_bc = json_decode($hoSoXinViec->bang_cap);
+                $data_bc = $hoSoXinViec->bang_cap;
             }
             
             $bang_cap = !empty($request->data['bang_cap']) ? $request->data['bang_cap'] : '';
@@ -318,8 +324,8 @@ class SeekerSiteController extends Controller
                                         $image_resize->save('upload/images/hosoxinviec/thumb/' . $file_name);
                                     }
                                     // close upload image
-                                    $file->move("upload/images/hosoxinviec/large/", $file_name);
-                                    $bc_arr[$key]['photo'] = $file_name;
+                                    //$file->move("upload/images/hosoxinviec/large/", $file_name);
+                                    $bc_arr[$key]['photo'] = "images/hosoxinviec/thumb/".$file_name;
                                 } else {
                                     return back()->with(["type" => "danger", "flash_message" => "Chỉ được up file có kích thước nhỏ hơn 7mb"]);
                                 }
@@ -334,7 +340,7 @@ class SeekerSiteController extends Controller
                     }
                 }
 
-                $hoSoXinViec->bang_cap = json_encode($bc_arr);
+                $hoSoXinViec->bang_cap = $bc_arr;
             }
 
             $hoSoXinViec->save();
@@ -543,12 +549,12 @@ class SeekerSiteController extends Controller
                     $mail->from(config('mail.from.address'), config('mail.from.name'));
                 });
                 auth()->guard('web')->logout();
-                return back()->with(["success" => "success", "flash_message" => "Bạn cần xác thực tài khoản, chúng tôi đã gửi mã xác thực vào email của bạn."]);
+                return back()->with(["type" => "success", "flash_message" => "Bạn cần xác thực tài khoản, chúng tôi đã gửi mã xác thực vào email của bạn."]);
             }
 
             return redirect()->route('home');
         } else {
-            return back()->with(["danger" => "danger", "flash_message" => "Email hoặc mật khẩu không chính xác!"]);
+            return back()->with(["type" => "danger", "flash_message" => "Email hoặc mật khẩu không chính xác!"]);
         }
     }
 

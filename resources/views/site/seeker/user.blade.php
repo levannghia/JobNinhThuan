@@ -1,5 +1,6 @@
 @extends('site.layout')
 @section('content')
+
     <?php
     $thumbsize = json_decode($setting['THUMB_SIZE_USER']);
     ?>
@@ -59,7 +60,7 @@
                             @if (@getimagesize($user->photo))
                                 <img src="{{ $user->photo }}" alt="{{ $user->name }}" class="rounded-fix mx-auto d-block">
                             @else
-                                <img src="/upload/images/seeker/thumb/{{ $user->photo }}" class="rounded-fix mx-auto d-block"
+                                <img src="/upload/{{ $user->photo }}" class="rounded-fix mx-auto d-block"
                                     alt="{{ $user->name }}">
                             @endif
 
@@ -142,18 +143,7 @@
     </div>
 @endsection
 @push('script')
-    @if (Session::has('type') && Session::get('type') == 'success')
-        <script>
-            var message = "{{ Session::get('flash_message') }}";
-
-            Successnotification(message);
-        </script>
-    @elseif (Session::has('type') && Session::get('type') == 'danger')
-        <script>
-            var message = "{{ Session::get('flash_message') }}";
-            Errornotification(message);
-        </script>
-    @endif
+@include('site.inc.toast_noti')
     <script>
         $(document).ready(function() {
             $('#datetimepicker1').datetimepicker({

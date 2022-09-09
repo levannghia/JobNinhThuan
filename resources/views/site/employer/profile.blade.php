@@ -1,5 +1,6 @@
 @extends('site.layout')
 @section('content')
+
     <?php
     $thumbsize = json_decode($setting['THUMB_SIZE_LOGO_EMPLOYER']);
     ?>
@@ -159,6 +160,5 @@
     </div>
 @endsection
 @push('script')
-    <script>
-    </script>
+@include('site.inc.toast_noti')
 @endpush

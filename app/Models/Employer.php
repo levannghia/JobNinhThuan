@@ -21,4 +21,9 @@ class Employer extends Model
         'user_id',
         'quy_mo'
     ];
+
+    public function provinceAdmin()
+    {
+        return $this->belongsTo(Province::class,'province_matp','matp');
+    }
 }

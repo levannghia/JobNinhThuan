@@ -61,17 +61,29 @@ class User extends Authenticatable
         return $this->belongsToMany(Recruitment::class,'user_recruitment','user_id','recruitment_id')->wherePivot('wishlist',1)->wherePivot('user_id',auth()->id());
     }
 
+    public function hoSoFolow()
+    {
+        return $this->belongsToMany(HoSoXinViec::class,'user_recruitment','user_id','hoso_id')->wherePivot('flow_user',1)->wherePivot('user_id',auth()->id());
+    }
+
+    public function packages(){
+        return $this->belongsToMany(Service::class,'user_package','user_id','package_id');
+    }
+
     public function provinces()
     {
         return $this->hasOne(Province::class,'province_matp','matp');
+    }
+
+    public function provinceAdmin()
+    {
+        return $this->belongsTo(Province::class,'province_matp','matp');
     }
 
     public function Roles()
     {
         return $this->belongsToMany(Role::class,'role_admin','role_id','admin_id');
     }
-
-    
 
     // public function checkPermissionAccess($checkPermission)
     // {

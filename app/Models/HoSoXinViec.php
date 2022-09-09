@@ -4,11 +4,20 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Casts\Json;
 
 class HoSoXinViec extends Model
 {
     use HasFactory;
+    use \Encore\Admin\Traits\Resizable;
     protected $table = "hosoxinviec";
+
+    protected $casts = [
+        'bang_cap' =>'json',
+        'kinh_nghiem'=>'json',
+        'ngoai_ngu' => 'json',
+        'tin_hoc' => 'json'
+    ];
 
     public function informations()
     {

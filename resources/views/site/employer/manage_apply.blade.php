@@ -8,28 +8,34 @@
                 <thead>
                     <tr>
                         <th scope="col">#</th>
-                        <th scope="col">Vị trí ứng tuyển</th>
-                        <th scope="col">Họ & tên</th>
-                        <th scope="col">Ngày ứng tuyển</th>
+                        <th scope="col">Vị trí tuyển dụng</th>
+                        <th scope="col">Hồ sơ ứng tuyển</th>
+                        <th scope="col">Hạn nộp</th>
                         <th scope="col">Tùy chỉnh</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($user_apply as $item)
-                        @foreach ($item->recruitmentApply as $key => $wishlist)
+                    @foreach ($hoso_apply as $stt => $item)      
                             <tr>
-                                <th scope="row">{{ $key + 1 }}</th>
-                                <td><a href="{{ route('recruitment.job.detail', ['slug' => $wishlist->slug, 'id' => $wishlist->id]) }}"
-                                        title="Chỉnh sửa hồ sơ {{ $wishlist->vi_tri }}">{{ $wishlist->vi_tri }}</a>
+                                <th scope="row">{{ $stt + 1 }}</th>
+                                <td><a href="{{ route('recruitment.job.detail', ['slug' => $item->slug, 'id' => $item->id]) }}"
+                                        title="Chỉnh sửa hồ sơ {{ $item->vi_tri }}">{{ $item->vi_tri }}</a>
                                 </td>
-                                <td>{{ $wishlist->Employers->company_name }}</td>
-                                <td>{{ $wishlist->han_nop }}</td>
                                 <td>
-                                    <a href="" title="Xóa tin tuyển dụng {{ $wishlist->vi_tri }}" data-name="{{ $wishlist->vi_tri }}" data-delete-id="{{ $wishlist->id }}"><i
+                                   <div class="box-apply">
+                                    @foreach ($item->hoSoApply as $key => $hoso)
+                                    <div class="hoso-apply">
+                                        <a class="name-hoso" href="{{route('hoso.detail',['slug'=>$hoso->slug,'id'=>$hoso->id])}}">{{ $hoso->vi_tri }}: <span>{{Helper::formatDate($hoso->pivot->date_apply)}}</span></a>
+                                    </div>
+                                    @endforeach
+                                   </div>
+                                </td>
+                                <td>{{ $item->han_nop }}</td>
+                                <td>
+                                    <a href="" title="Xóa tin tuyển dụng {{ $item->vi_tri }}" data-name="{{ $item->vi_tri }}" data-delete-id="{{ $item->id }}"><i
                                             class="fas fa-trash-alt"></i></a>
                                 </td>
                             </tr>
-                        @endforeach
                     @endforeach
                 </tbody>
             </table>

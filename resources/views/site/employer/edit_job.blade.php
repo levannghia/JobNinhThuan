@@ -15,8 +15,8 @@
                             {{-- <h5 class="card-title">Special title treatment</h5> --}}
                             <div class="row g-3">
                                 <div class="col-md-4">
-                                    <label for="validationCustom01" class="form-label">Vị trí tuyển dụng</label>
-                                    <input type="text" class="form-control" name="vitri" id="validationCustom01"
+                                    <label for="" class="form-label">Vị trí tuyển dụng</label>
+                                    <input type="text" class="form-control" name="vitri" id=""
                                         value="{{ old('vitri', $recruitment->vi_tri) }}" required>
                                     <div class="valid-feedback">
                                         Looks good!
@@ -26,7 +26,7 @@
                                     </div>
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="validationCustom01" class="form-label">Số lượng tuyển</label>
+                                    <label for="" class="form-label">Số lượng tuyển</label>
                                     <input type="number" class="form-control" name="soluong"
                                         value="{{ old('soluong', $recruitment->so_luong) }}" required>
                                     <div class="valid-feedback">
@@ -37,7 +37,7 @@
                                     </div>
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="validationCustom01" class="form-label">Hạn nộp hồ sơ</label>
+                                    <label for="" class="form-label">Hạn nộp hồ sơ</label>
                                     {{-- <div id="picker_hannop"></div> --}}
                                     <input type="text" class="form-control" id="datetimepicker1" name="hannop"
                                         value="{{ old('hannop', $recruitment->han_nop) }}" required>
@@ -49,19 +49,19 @@
                                     </div>
                                 </div>
                                 <div class="col-md-6">
-                                    <label for="validationCustom01" class="form-label">Hoa hồng (nếu có)</label>
+                                    <label for="" class="form-label">Hoa hồng (nếu có)</label>
                                     <input type="number" class="form-control" placeholder="Từ (%)" name="hoahong_from"
                                         value="{{ old('hoa_hong_from', $recruitment->hoa_hong_from) }}">
                                 </div>
                                 <div class="col-md-6">
-                                    <label for="validationCustom01" class="form-label">-></label>
+                                    <label for="" class="form-label">-></label>
                                     <input type="number" class="form-control" placeholder="Đến (%)" name="hoahong_to"
                                         value="{{ old('hoa_hong_to', $recruitment->hoa_hong_to) }}">
                                 </div>
 
                                 <div class="col-md-4">
                                     <label for="validationCustom02" class="form-label">Địa điểm làm việc</label>
-                                    <select class="form-select province" name="province_matp[]" id="validationCustom04"
+                                    <select class="form-select province" name="province_matp[]" id=""
                                         required multiple>
                                         <option disabled value="">Choose...</option>
                                         @foreach ($province_list as $province)
@@ -77,8 +77,8 @@
                                 </div>
                                 @foreach ($category_list as $key => $category)
                                     <div class="col-md-4">
-                                        <label for="validationCustom04" class="form-label">{{ $category->name }}</label>
-                                        <select class="form-select" id="validationCustom04" required
+                                        <label for="" class="form-label">{{ $category->title }}</label>
+                                        <select class="form-select" id="" required
                                             name="information_id[]">
                                             <option selected disabled value="">Choose...</option>
                                             @foreach ($category->informations as $item)
@@ -92,9 +92,6 @@
                                         </div>
                                     </div>
                                 @endforeach
-
-
-
                             </div>
                         </div>
                     </div>
@@ -109,23 +106,23 @@
                             <div class="row g-3 pt-3">
                                 <div class="col-md-12">
                                     <label class="form-label" for="">Mô tả công việc</label>
-                                    <textarea class="form-control" id="exampleFormControlTextarea1" name="description" rows="3" required>{{ $recruitment->description }}</textarea>
+                                    <textarea class="form-control" id="" name="description" rows="3" required>{{ $recruitment->description }}</textarea>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label" for="">Quyền lợi</label>
-                                    <textarea class="form-control" id="exampleFormControlTextarea1" name="quyenloi" rows="3" required>{{ $recruitment->quyen_loi }}</textarea>
+                                    <textarea class="form-control" id="" name="quyenloi" rows="3" required>{{ $recruitment->quyen_loi }}</textarea>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label" for="">Yêu cầu công việc</label>
-                                    <textarea class="form-control" id="exampleFormControlTextarea1" name="yeucau" rows="3" required>{{ $recruitment->yeu_cau }}</textarea>
+                                    <textarea class="form-control" id="" name="yeucau" rows="3" required>{{ $recruitment->yeu_cau }}</textarea>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label" for="">Hồ sơ ứng tuyển gồm</label>
-                                    <textarea class="form-control" id="exampleFormControlTextarea1" name="hosogom" rows="3" required>{{ $recruitment->ho_so_gom }}</textarea>
+                                    <textarea class="form-control" id="" name="hosogom" rows="3" required>{{ $recruitment->ho_so_gom }}</textarea>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label" for="">Hình thức nộp</label>
-                                    <textarea class="form-control" id="exampleFormControlTextarea1" name="hinhthuc" rows="3" required>{{ $recruitment->hinh_thuc }}</textarea>
+                                    <textarea class="form-control" id="" name="hinhthuc" rows="3" required>{{ $recruitment->hinh_thuc }}</textarea>
                                 </div>
                             </div>
                         </div>
@@ -169,24 +166,14 @@
     </div>
 @endsection
 @push('script')
-    @if (Session::has('type') && Session::get('type') == 'success')
-        <script>
-            var message = "{{ Session::get('flash_message') }}";
-
-            Successnotification(message);
-        </script>
-    @elseif (Session::has('type') && Session::get('type') == 'danger')
-        <script>
-            var message = "{{ Session::get('flash_message') }}";
-            Errornotification(message);
-        </script>
-    @endif
+@include('site.inc.toast_noti')
     <script>
         $(document).ready(function() {
             $('.province').select2();
             // $('#picker_hannop').dateTimePicker({title: 'Hạn nộp hồ sơ'});
             $('#datetimepicker1').datetimepicker({
                 sideBySide: true,
+                format: 'DD/MM/YYYY HH:mm A',
                 icons: {
                     time: "far fa-clock",
                     date: "fa fa-calendar",

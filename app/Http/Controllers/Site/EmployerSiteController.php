@@ -23,6 +23,12 @@ use Illuminate\Support\Facades\Validator;
 
 class EmployerSiteController extends Controller
 {
+    public function manageFolow()
+    {
+        $user_folow = User::with('hoSoFolow')->get();
+        return view('site.employer.manage_folow', compact('user_folow'));
+    }
+
     public function profileEmployer()
     {
         $id = auth()->guard('web')->id();
@@ -35,8 +41,8 @@ class EmployerSiteController extends Controller
 
     public function manageApply()
     {
-        $user_apply = User::with('recruitmentApply')->get();
-        return view('site.employer.manage_apply', compact('user_apply'));
+        $hoso_apply = Recruitment::where('user_id',auth()->id())->where('status','!=',2)->get();
+        return view('site.employer.manage_apply', compact('hoso_apply'));
     }
 
     public function updateProfileEmployer(Request $request, $id)
@@ -105,6 +111,17 @@ class EmployerSiteController extends Controller
             $employer->company_name = $request->company_name;
 
             if ($request->hasFile('photo')) {
+                if (!empty($employer->photo)) {
+                    $thumb_img = 'upload/images/employer/thumb/' . $employer->photo;
+                    if (file_exists($thumb_img)) {
+                        unlink($thumb_img);
+                    }
+    
+                    $large_img = 'upload/images/employer/large/' . $employer->photo;
+                    if (file_exists($large_img)) {
+                        unlink($large_img);
+                    }
+                }
                 $file = $request->photo;
                 $file_name = Str::slug($file->getClientOriginalName(), "-") . "-" . time() . "." . $file->getClientOriginalExtension();
                 //resize file befor to upload large
@@ -138,7 +155,7 @@ class EmployerSiteController extends Controller
 
     public function createJob()
     {
-        $category_list = Category::with('informations')->where('status', 1)->where('type', 2)->orWhere('type', 0)->orderBy('stt', 'ASC')->get();
+        $category_list = Category::with('informations')->where('status', 1)->whereIn('type', [0,2])->orderBy('order', 'ASC')->get();
         $province_list = Province::get();
         $setting = Helper::settings();
         $employer = Employer::where('user_id', auth()->guard('web')->id())->first();
@@ -208,7 +225,7 @@ class EmployerSiteController extends Controller
     public function editJob($slug, $id)
     {
         $setting = Helper::settings();
-        $category_list = Category::with('informations')->where('status', 1)->where('type', 2)->orWhere('type', 0)->orderBy('stt', 'ASC')->get();
+        $category_list = Category::with('informations')->where('status', 1)->whereIn('type', [0,2])->orderBy('order', 'ASC')->get();
         $province_list = Province::get();
         $recruitment = Recruitment::with('provinces', 'informations')->where('slug', $slug)->where('id', $id)->first();
         $employer = Employer::where('user_id', auth()->id())->first();

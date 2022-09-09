@@ -25,7 +25,8 @@
                             src="/upload/images/employer/thumb/{{ $recruitment->Employers->photo }}"
                             alt="{{ $recruitment->Employers->company_name }}" style="width: 80px; height: 80px;">
                         <div class="text-start ps-4">
-                            <h3 class="mb-3">{{ $recruitment->vi_tri }}</h3>
+                            <h3 class="mb-1">{{ $recruitment->vi_tri }}</h3>
+                            <p class="mb-1">{{ $recruitment->Employers->company_name }}</p>
                             <span id="add_wishlist" class="text-truncate me-3"><i id="icon_wishlist"
                                     class="{{ isset($check_wishlist) && $check_wishlist->wishlist == 1 ? 'fas' : 'far' }} fa-heart text-primary me-2"></i>Lưu
                                 việc làm</span>

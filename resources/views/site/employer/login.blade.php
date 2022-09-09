@@ -44,55 +44,7 @@
     </section>
 @endsection
 @push('script')
-    @if (Session::has('success'))
-        <script>
-            var message = "{{ Session::get('flash_message') }}";
-
-            toastr.success(message, 'Success', {
-                timeOut: 10000,
-                "closeButton": true,
-                "debug": false,
-                "newestOnTop": true,
-                "progressBar": true,
-                "positionClass": "toast-top-right",
-                "preventDuplicates": true,
-                "onclick": null,
-                "showDuration": "300",
-                "hideDuration": "1000",
-                "extendedTimeOut": "1000",
-                "showEasing": "swing",
-                "hideEasing": "linear",
-                "showMethod": "fadeIn",
-                "hideMethod": "fadeOut",
-                "tapToDismiss": false
-
-            })
-        </script>
-    @elseif (Session::has('danger'))
-        <script>
-            toastr.error('{{ Session::get('flash_message') }}', 'Error', {
-                "positionClass": "toast-top-right",
-                timeOut: 10000,
-                "closeButton": true,
-                "debug": false,
-                "newestOnTop": true,
-                "progressBar": true,
-                "preventDuplicates": true,
-                "onclick": null,
-                "showDuration": "300",
-                "hideDuration": "1000",
-                "extendedTimeOut": "1000",
-                "showEasing": "swing",
-                "hideEasing": "linear",
-                "showMethod": "fadeIn",
-                "hideMethod": "fadeOut",
-                "tapToDismiss": false
-
-            })
-        </script>
-    @endif
-
-
+@include('site.inc.toast_noti')
     <script>
          $(document).ready(function() {
 
