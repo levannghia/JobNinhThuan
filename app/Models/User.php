@@ -7,10 +7,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use NotificationChannels\WebPush\HasPushSubscriptions;
+
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, HasPushSubscriptions;
 
     /**
      * The attributes that are mass assignable.
@@ -67,7 +69,7 @@ class User extends Authenticatable
     }
 
     public function packages(){
-        return $this->belongsToMany(Service::class,'user_package','user_id','package_id');
+        return $this->belongsToMany(Package::class,'user_package','user_id','package_id');
     }
 
     public function provinces()
@@ -95,4 +97,14 @@ class User extends Authenticatable
     //     }
     //     return false;
     // }
+
+    public function checkServiceAccess($checkService){
+        $packages = auth()->user()->packages;
+        foreach ($packages as $key => $package) {
+            if($package->services->contains('key_code',$checkService)){
+                return true;
+            }
+        }
+        return false;
+    }
 }

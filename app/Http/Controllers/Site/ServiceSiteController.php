@@ -13,4 +13,9 @@ class ServiceSiteController extends Controller
         $package = Package::where('status',1)->get();
         return view('site.service.index',compact('package'));
     }
+
+    public function pushNews()
+    {
+        return "Ok";
+    }
 }

@@ -12,6 +12,7 @@ use Intervention\Image\ImageManagerStatic as Image;
 use Helper;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CategoryController extends AdminController
 {
@@ -112,7 +113,6 @@ class CategoryController extends AdminController
     protected function form()
     {
 
-
         $form = new Form(new Category());
 
         $form->column(1 / 2, function ($form) {
@@ -142,6 +142,8 @@ class CategoryController extends AdminController
         });
 
         $form->disableViewCheck();
+
+        
         return $form;
     }
 }

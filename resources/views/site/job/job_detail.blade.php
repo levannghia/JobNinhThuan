@@ -22,7 +22,7 @@
                 <div class="col-lg-8">
                     <div class="d-flex align-items-center mb-5">
                         <img class="flex-shrink-0 img-fluid border rounded"
-                            src="/upload/images/employer/thumb/{{ $recruitment->Employers->photo }}"
+                            src="/upload/{{ $recruitment->Employers->photo }}"
                             alt="{{ $recruitment->Employers->company_name }}" style="width: 80px; height: 80px;">
                         <div class="text-start ps-4">
                             <h3 class="mb-1">{{ $recruitment->vi_tri }}</h3>

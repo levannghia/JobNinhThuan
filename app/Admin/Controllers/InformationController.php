@@ -33,8 +33,9 @@ class InformationController extends AdminController
             'off' => ['value' => 0, 'text' => 'disable', 'color' => 'default'],
         ];
         $grid = new Grid(new information());
-
+       
         $grid->column('order', __('Stt'))->editable()->sortable();
+        $grid->column('photo', __('Photo'))->image('',50,50);
         $grid->column('name', __('Name'))->editable(); 
         $grid->column('categories.title', __('Tên danh mục'))->sortable();
         $grid->column('status','Hiển thị')->switch($states);
@@ -90,11 +91,13 @@ class InformationController extends AdminController
         ];
         $form = new Form(new information());
 
-        $form->text('name', __('Name'))->rules('required|max:200');
+        $form->text('name', __('Name'))->attribute(['id' => 'convert_slug'])->rules('required|max:200');
+        $form->text('slug', __('Slug'))->creationRules(['required', "unique:information,slug"])
+            ->updateRules(['required', "unique:information,slug,{{id}}"]);
         $form->image('photo', __('Photo'))->move('images/information/thumb')->uniqueName()->removable()->thumbnail('thumb', $thumb_size->width, $thumb_size->height);
         // $form->select('category_id',__('Danh mục'))->options($data);
         $form->select('category_id',__('Danh mục'))->options((new Category())::selectOptions());
-        $form->switch('status', 'Hiển thị')->states($states);
+        $form->switch('status', 'Hiển thị')->states($states)->default(1);
         $form->switch('noi_bat', 'Nổi bật')->states($states);
         $form->number('order', __('STT'))->default(1);
         $form->disableViewCheck();

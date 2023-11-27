@@ -52,7 +52,7 @@
         @include('site.inc.navbar')
         <!-- Navbar End -->
 
-        @if (request()->segment(1) != null)
+        @if (request()->segment(1) != null && request()->segment(1) != 'tin-tuyen-dung')
             @include('site.inc.header')
         @else
             @include('site.inc.slide')
@@ -103,6 +103,7 @@
     <script src="{{ asset('site/lib/waypoints/waypoints.min.js') }}"></script>
     <script src="{{ asset('site/lib/owlcarousel/owl.carousel.min.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="{{ asset('site/js/register_service.js') }}"></script>
 
     <!-- Template Javascript -->
     <script src="{{ asset('site/js/main.js') }}"></script>

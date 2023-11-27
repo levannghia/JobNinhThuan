@@ -11,7 +11,7 @@ class TelegramController extends Controller
 {
     public function updatedActivity()
     {
-        $activity = Telegram::getUpdates();
+        $activity = Telegram::getUpdates(); 
         dd($activity);
     }
 
@@ -24,14 +24,14 @@ class TelegramController extends Controller
            .'<b>Vị trí tuyển dụng:</b>'
            ."<a href='tg://user?id=123456789'>inline mention of a user</a>";
         }
- 
+
         Telegram::sendMessage([
             'chat_id' => -1001513307182,
             'parse_mode' => 'HTML',
             //'photo' => 'https://pbs.twimg.com/profile_images/890901007387025408/oztASP4n.jpg',
             'text' => $text
         ]);
-        
+
         return dd("gui thanh cong");
     }
 }

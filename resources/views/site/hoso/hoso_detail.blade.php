@@ -196,27 +196,27 @@
                                     <div class="owl-carousel owl-theme owl-bang-cap">
                                         @foreach ($hoSo->bang_cap as $bc)
                                             <figure class="snip0019">
-                                                <img src="/upload/{{ $bc['photo'] }}"
+                                                <img src="/upload/{{ isset($bc['photo']) ? $bc['photo'] : '' }}"
                                                     alt="sample12" />
                                                 <figcaption>
                                                     <div>
-                                                        <h2> {{ $bc['name'] }}</h2>
+                                                        <h2> {{ isset($bc['name']) ? $bc['name'] : '' }}</h2>
                                                     </div>
                                                     <div>
                                                         <p>
                                                             {{-- <i class="fab fa-accusoft"></i> --}}
                                                             <i class="far fa-building text-primary me-2"></i>
-                                                            {{ $bc['don_vi'] }} <br>
+                                                            {{ isset($bc['don_vi']) ? $bc['don_vi'] : '' }} <br>
                                                             <i class="fab fa-accusoft text-primary me-2"></i>
-                                                            {{ $bc['chuyen_nganh'] }} <br>
+                                                            {{ isset($bc['chuyen_nganh']) ? $bc['chuyen_nganh'] : '' }} <br>
                                                             <i class="fa fa-angle-right text-primary me-2"></i>
-                                                            {{ $bc['loai_tot_nghiep'] }} <br>
+                                                            {{ isset($bc['loai_tot_nghiep']) ? $bc['loai_tot_nghiep'] : '' }} <br>
                                                             <i class="fa fa-angle-right text-primary me-2"></i>
-                                                            {{ $bc['thoi_gian'] }}
+                                                            {{ isset($bc['thoi_gian']) ? $bc['thoi_gian'] : '' }}
                                                         </p>
                                                     </div>
-                                                    <a href="/upload/{{ $bc['photo'] }}"
-                                                        data-fancybox="gallery" data-caption="{{ $bc['name'] }}"></a>
+                                                    <a href="/upload/{{ isset($bc['photo']) ? $bc['photo'] : '' }}"
+                                                        data-fancybox="gallery" data-caption="{{ isset($bc['name']) ? $bc['name'] : '' }}"></a>
                                                 </figcaption>
                                             </figure>
                                         @endforeach

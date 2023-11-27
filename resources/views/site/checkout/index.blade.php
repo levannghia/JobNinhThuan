@@ -16,8 +16,8 @@
                     <h2>Address</h2>
                     <div class="card">
                         <address>
-                            {{ auth()->user()->name }}<br />
-                            {{ auth()->user()->email }}<br />
+                            {{ auth()->user()->name }}<br/>
+                            {{ auth()->user()->email }}<br/>
                             {{ auth()->user()->phone }}
                         </address>
                     </div>
@@ -28,10 +28,10 @@
 
                     <div class="form__radios">
                         <div class="form__radio">
-                            <label for="visa"><svg class="icon">
+                            <label for="vnpay"><svg class="icon">
                                     <use xlink:href="#icon-visa" />
-                                </svg>Visa Payment</label>
-                            <input id="visa" name="payment_method" type="radio" />
+                                </svg>VNPAY</label>
+                            <input id="vnpay" name="payment_method" value="2" type="radio" />
                         </div>
 
                         <div class="form__radio">

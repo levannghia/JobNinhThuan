@@ -122,23 +122,23 @@
                                     <p class="card-title btn text-center delete-style btn-delete-bc" data-dem-bc="{{$key}}">DELETE</p>
                                     <div class="col-md-6">
                                     <label for="inputEmail4" class="form-label">Tên bằng cấp / chứng chỉ</label>
-                                    <input type="text" name="data[bang_cap][{{$key}}][name]" value="{{$item['name']}}" class="form-control" id="inputEmail4">
+                                    <input type="text" name="data[bang_cap][{{$key}}][name]" value="{{isset($item['name']) ? $item['name'] : ''}}" class="form-control" id="inputEmail4">
                                   </div>
                                   <div class="col-md-6">
                                     <label for="inputPassword4" class="form-label">Trường / Đơn vị cấp </label>
-                                    <input type="text" name="data[bang_cap][{{$key}}][don_vi]" value="{{$item['don_vi']}}" class="form-control" id="inputPassword4">
+                                    <input type="text" name="data[bang_cap][{{$key}}][don_vi]" value="{{isset($item['don_vi']) ? $item['don_vi'] : ''}}" class="form-control" id="inputPassword4">
                                   </div>
                                   <div class="col-md-6">
                                     <label for="inputAddress" class="form-label">Thời gian</label>
-                                    <input type="text" name="data[bang_cap][{{$key}}][thoi_gian]" value="{{$item['thoi_gian']}}" class="form-control" id="inputAddress">
+                                    <input type="text" name="data[bang_cap][{{$key}}][thoi_gian]" value="{{isset($item['thoi_gian']) ? $item['thoi_gian'] : ''}}" class="form-control" id="inputAddress">
                                   </div>
                                   <div class="col-md-6">
                                     <label for="inputAddress2" class="form-label">Chuyên ngành</label>
-                                    <input type="text" name="data[bang_cap][{{$key}}][chuyen_nganh]" value="{{$item['chuyen_nganh']}}" class="form-control" id="inputAddress2">
+                                    <input type="text" name="data[bang_cap][{{$key}}][chuyen_nganh]" value="{{isset($item['chuyen_nganh']) ? $item['chuyen_nganh'] : ''}}" class="form-control" id="inputAddress2">
                                   </div>
                                   <div class="col-md-6">
                                     <label for="inputCity" class="form-label">Loại tốt nghiệp</label>
-                                    <input type="text" name="data[bang_cap][{{$key}}][loai]" class="form-control" value="{{$item['loai_tot_nghiep']}}" id="inputAddress2">
+                                    <input type="text" name="data[bang_cap][{{$key}}][loai]" class="form-control" value="{{isset($item['loai_tot_nghiep']) ? $item['loai_tot_nghiep'] : ''}}" id="inputAddress2">
                                   </div>
                                   
                                     <div class="col-md-6">
@@ -147,7 +147,7 @@
 
                                         @if (isset($item['photo']))
                                             <input type="hidden" value="{{$item['photo']}}" name="data[bang_cap][{{$key}}][photo_temp]">
-                                            <img style="padding-top: 10px;" src="/upload/{{$item['photo']}}" class="img-fluid" alt="{{$item['name']}}">
+                                            <img style="padding-top: 10px;" src="/upload/{{isset($item['photo']) ? $item['photo'] : ''}}" class="img-fluid" alt="{{isset($item['name']) ? $item['name'] : ''}}">
                                         @endif
                                         
                                     </div>

@@ -12,6 +12,7 @@ use App\Http\Controllers\Dashboard\InformationAdminController;
 use App\Http\Controllers\Dashboard\WorkLocationController;
 use App\Http\Controllers\Site\CartSiteController;
 use App\Http\Controllers\Site\CheckoutController;
+use App\Http\Controllers\Site\CouponsController;
 use App\Http\Controllers\Site\TelegramController;
 use App\Http\Controllers\Site\HomeSiteController;
 use App\Http\Controllers\Site\SeekerSiteController;
@@ -19,6 +20,8 @@ use App\Http\Controllers\Site\HoSoSiteController;
 use App\Http\Controllers\Site\EmployerSiteController;
 use App\Http\Controllers\Site\RecruitmentController;
 use App\Http\Controllers\Site\ServiceSiteController;
+use App\Http\Controllers\Site\PushController;
+use App\Http\Controllers\site\WheelController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -33,26 +36,30 @@ use Illuminate\Support\Facades\Route;
 */
 
 
-Route::get('resize-image/{pathkey}/{filename}/{w?}/{h?}', function($pathkey, $filename, $w=100, $h=100){
-    //die(public_path('images'));
+// Route::get('resize-image/{pathkey}/{filename}/{w?}/{h?}', function($pathkey, $filename, $w=100, $h=100){
+//     //die(public_path('images'));
 
-//        $filename ='/var/www/laravel/backpack-demo/storage/app/public/app/upload/08034af8455e92f91c738edc280163b1.jpg';
-    $cacheimage = Image::cache(function($image) use($pathkey, $filename, $w, $h){
+// //        $filename ='/var/www/laravel/backpack-demo/storage/app/public/app/upload/08034af8455e92f91c738edc280163b1.jpg';
+//     $cacheimage = Image::cache(function($image) use($pathkey, $filename, $w, $h){
 
-        switch($pathkey){
-            case 'tour-images':
-                $filepath = 'upload/tour-images/' . $filename;
-                break;
-        }
-        $filepath = public_path('upload').'/' . $filename;
-        return $image->make($filepath)->resize($w,$h);
+//         switch($pathkey){
+//             case 'tour-images':
+//                 $filepath = 'upload/tour-images/' . $filename;
+//                 break;
+//         }
+//         $filepath = public_path('upload').'/' . $filename;
+//         return $image->make($filepath)->resize($w,$h);
 
-    },10,true); // cache for 10 minutes
+//     },10,true); // cache for 10 minutes
     
-    return Response::make($cacheimage, 200, array('Content-Type' => 'image/jpeg'));
-});
+//     return Response::make($cacheimage, 200, array('Content-Type' => 'image/jpeg'));
+// });
+
 
 Route::middleware(['web'])->group(function () {
+    Route::get('vong-quay', [WheelController::class, 'index']);
+    Route::post('subscriptions', [PushController::class, 'store']);
+    Route::get('push', [PushController::class, 'push']);
     Route::get('/', [HomeSiteController::class, 'index'])->name('home');
     Route::get('/ok', [TelegramController::class, 'updatedActivity']);
     Route::get('/send', [TelegramController::class, 'sendMessage']);
@@ -148,5 +155,11 @@ Route::middleware(['web'])->group(function () {
 
     Route::prefix('service')->name('service.')->group(function(){
         Route::get('/',[ServiceSiteController::class,'index'])->name('index');
+        Route::get('push-news',[ServiceSiteController::class,'pushNews'])->name('push.news')->can('push_news');
+    });
+
+    Route::prefix('coupon')->name('coupon.')->group(function(){
+        Route::post('add',[CouponsController::class,'addCoupon'])->name('add');
+        // Route::get('push-news',[ServiceSiteController::class,'pushNews'])->name('push.news')->can('push_news');
     });
 });

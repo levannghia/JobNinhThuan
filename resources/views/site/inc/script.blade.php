@@ -127,5 +127,30 @@
                 }
             });
         }
+
+        $('#add_coupon').click(function (e) { 
+            e.preventDefault();
+            var code = $('input[name="coupon"]').val();
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': _token,
+                },
+                type: "POST",
+                url: "{{route('coupon.add')}}",
+                data: {
+                    code:code
+                },
+                // dataType: "dataType",
+                success: function (response) {
+                    if(response.msg != ''){
+                        Errornotification(response.msg);
+                    }else{
+                        $('.discount').html(response.discount);
+                        getCartCount();
+                    }
+                    console.log(response);
+                }
+            });
+        });
     });
 </script>

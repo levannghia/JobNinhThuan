@@ -138,6 +138,7 @@ class HoSoXinViecController extends AdminController
                 $table->textarea('thoi_gian','Thời gian');
                
             });
+            
         });
         $form->disableViewCheck();
         return $form;

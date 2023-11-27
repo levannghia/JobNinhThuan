@@ -9,6 +9,7 @@ use Encore\Admin\Form;
 use Encore\Admin\Grid;
 use Encore\Admin\Show;
 use Helper;
+use Illuminate\Support\Facades\DB;
 
 class PackageController extends AdminController
 {
@@ -80,10 +81,12 @@ class PackageController extends AdminController
      */
     protected function form()
     {
+
         $states = [
             'on'  => ['value' => 1, 'text' => 'enable', 'color' => 'success'],
             'off' => ['value' => 0, 'text' => 'disable', 'color' => 'danger'],
         ];
+        
         $form = new Form(new Package());
 
         $form->text('title', __('Title'))->rules('required|max:100');

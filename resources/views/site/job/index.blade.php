@@ -29,7 +29,7 @@
 
                 <div class="col md-9">
                     <div class="tab-class text-center wow fadeInUp" data-wow-delay="0.3s">
-                        <ul class="nav nav-pills d-inline-flex justify-content-center border-bottom mb-5">
+                        {{-- <ul class="nav nav-pills d-inline-flex justify-content-center border-bottom mb-5">
                             <li class="nav-item">
                                 <a class="d-flex align-items-center text-start mx-3 ms-0 pb-3 active" data-bs-toggle="pill"
                                     href="#tab-1">
@@ -48,7 +48,7 @@
                                     <h6 class="mt-n1 mb-0">Part Time</h6>
                                 </a>
                             </li>
-                        </ul>
+                        </ul> --}}
                         <div class="tab-content">
                             <div id="tab-1" class="tab-pane fade show p-0 active load-data-recruitment">
                                 @foreach ($recruiment_list as $item)
@@ -56,7 +56,7 @@
                                         <div class="row g-4">
                                             <div class="col-sm-12 col-md-8 d-flex align-items-center">
                                                 <img class="flex-shrink-0 img-fluid border rounded"
-                                                    src="/upload/images/employer/thumb/{{ $item->Employers->photo }}"
+                                                    src="/upload/{{ $item->Employers->photo }}"
                                                     alt="" style="width: 80px; height: 80px;">
                                                 <div class="text-start ps-4">
                                                     <a href="{{route('recruitment.job.detail',['slug' => $item->slug, 'id' => $item->id])}}" title="{{ $item->vi_tri }}">
@@ -109,8 +109,6 @@
                                         </div>
                                     </div>
                                 @endforeach
-
-
                             </div>
                             <a class="btn btn-primary load-more py-3 px-5" href="#">Browse More Jobs</a>
                         </div>
@@ -191,8 +189,7 @@
                                     alert('Đã đạt giới hạn lưu')
                                 }
 
-                                localStorage.setItem('wishlist_recruitment', JSON.stringify(
-                                    old_data));
+                                localStorage.setItem('wishlist_recruitment', JSON.stringify(old_data));
                             } else if (data.status == 0) {
                                 Errornotification(data.msg);
                             } else {

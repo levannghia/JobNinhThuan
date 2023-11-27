@@ -1,7 +1,7 @@
 <!--  Cart Modal -->
 @php
     $total = str_replace('.','',Cart::total());
-    $price = str_replace('.','',Cart::priceTotal());
+    $price = str_replace('.','',Cart::subTotal());
 @endphp
  <div class="modal fade" id="cart_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable">
@@ -32,17 +32,17 @@
                     </div>
 
                     <div class="promoCode"><label for="promo">Have A Promo Code?</label><input
-                            type="text" name="promo" placholder="Enter Code" />
-                        <a href="#" class="btn"></a>
+                            type="text" name="coupon" placholder="Enter Code" />
+                        <a href="" class="btn" id="add_coupon"></a>
                     </div>
 
                     <div class="subtotal cf">
                         <ul>
                             <li class="totalRow"><span class="label">Subtotal</span><span
-                                    class="value">$0.00</span></li>
+                                    class="value price_modal">{{Helper::formatCurrency($price)}}</span></li>
 
-                            <li class="totalRow"><span class="label">Shipping</span><span
-                                    class="value price_modal" id="">{{Helper::formatCurrency($price)}}</span></li>
+                            <li class="totalRow"><span class="label">Discount</span><span
+                                    class="value discount" id="">$0.00</span></li>
 
                             <li class="totalRow"><span class="label">Tax</span><span
                                     class="value">$0.00</span></li>

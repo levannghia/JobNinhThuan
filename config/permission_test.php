@@ -22,6 +22,14 @@ return [
         'delete-work-location' => 'delete_work_location',
     ],
 
+    'service_access' => [
+        'advanced_search' => 'advanced_search',
+        'push_news' => 'push_news',
+        'filter_profile' => 'filter_profile',
+        'hot_recruitment' => 'hot_recruitment',
+        'urgent_recruitment' => 'urgent_recruitment',
+    ],
+
     'module_childrent' => [
         'view',
         'add',

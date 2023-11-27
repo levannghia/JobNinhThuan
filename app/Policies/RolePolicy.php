@@ -30,7 +30,7 @@ class RolePolicy
      */
     public function view(User $user)
     {
-        $user->checkPermissionAccess(config('permission.access.view-role'));
+        return $user->checkPermissionAccess(config('permission.access.view-role'));
     }
 
     /**
@@ -41,7 +41,7 @@ class RolePolicy
      */
     public function create(User $user)
     {
-        $user->checkPermissionAccess(config('permission.access.add-role'));
+        return $user->checkPermissionAccess(config('permission.access.add-role'));
     }
 
     /**
@@ -53,7 +53,7 @@ class RolePolicy
      */
     public function update(User $user, Role $role)
     {
-        $user->checkPermissionAccess(config('permission.access.edit-role'));
+        return $user->checkPermissionAccess(config('permission.access.edit-role'));
     }
 
     /**
@@ -65,7 +65,7 @@ class RolePolicy
      */
     public function delete(User $user, Role $role)
     {
-        $user->checkPermissionAccess(config('permission.access.delete-role'));
+        return $user->checkPermissionAccess(config('permission.access.delete-role'));
     }
 
     /**

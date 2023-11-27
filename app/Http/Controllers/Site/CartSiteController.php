@@ -87,7 +87,7 @@ class CartSiteController extends Controller
     }
 
     public function getCartData(){
-        $price = str_replace('.','',Cart::priceTotal());
+        $price = str_replace('.','',Cart::subTotal());
         $total = str_replace('.','',Cart::total());
         return response()->json([
             "count" => Cart::count(),

@@ -3,7 +3,9 @@
 use Carbon\Carbon;
 use App\Models\Config;
 use App\Models\Employer;
-use Illuminate\Support\Facades\Auth;
+use App\Models\Category;
+use App\Models\Information;
+use App\Models\Province;
 
 class Helper
 {
@@ -87,7 +89,7 @@ class Helper
     public static function getHonNhan()
     {
         return [
-            honNhan::signle => "Độc thân",
+            honNhan::single => "Độc thân",
             honNhan::Married => "Đã kết hôn"
         ];
     }
@@ -194,5 +196,16 @@ class Helper
         $amount->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, $r);
 
         return $amount->format($val);
+    }
+
+    public static function categoryShowIndex(){
+        $data_category = Category::where('show_index', 1)->where('status', 1)->orderBy('order', 'ASC')->first();
+        $data = Information::withCount('recruitments')->where('category_id',$data_category->id)->where('status',1)->where('noi_bat',1)->get();
+        return $data;
+    }
+
+    public static function provinceSearch(){
+        $province = Province::where('status',1)->get();
+        return $province;
     }
 }

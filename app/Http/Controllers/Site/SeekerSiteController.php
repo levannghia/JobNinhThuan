@@ -543,7 +543,7 @@ class SeekerSiteController extends Controller
                     "link" => $link_register,
                 );
                 //Gui mail 
-                Mail::send('dashboard.page.confirm_account', compact('data'), function ($mail) use ($data) {
+                Mail::send('site.email.confirm_account', compact('data'), function ($mail) use ($data) {
                     $mail->subject(config('app.name') . " - Xác nhận tài khoản");
                     $mail->to($data['email'], $data['name']);
                     $mail->from(config('mail.from.address'), config('mail.from.name'));
@@ -597,7 +597,7 @@ class SeekerSiteController extends Controller
                     "link" => $link_register,
                 );
                 //Gui mail 
-                Mail::send('dashboard.page.confirm_account', compact('data'), function ($mail) use ($data) {
+                Mail::send('site.email.confirm_account', compact('data'), function ($mail) use ($data) {
                     $mail->subject(config('app.name') . " - Xác nhận tài khoản");
                     $mail->to($data['email'], $data['name']);
                     $mail->from(config('mail.from.address'), config('mail.from.name'));

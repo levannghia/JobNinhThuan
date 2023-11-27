@@ -78,6 +78,7 @@ class ServiceController extends AdminController
         ];
 
         $form->text('title', __('Title'))->rules('required');
+        $form->select('key_code',__('Key code'))->options(config('permission_test.service_access'));
         $form->switch('status', __('Status'))->states($states)->default(1);
         $form->number('order', __('Order'))->default(1);
 

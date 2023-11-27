@@ -27,6 +27,6 @@ Class gender{
 }
 
 Class honNhan {
-    const signle = 0;
+    const single = 0;
     const Married = 1;
 }

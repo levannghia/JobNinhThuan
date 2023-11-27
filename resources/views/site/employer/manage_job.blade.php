@@ -10,8 +10,9 @@
                         <th scope="col">#</th>
                         <th scope="col">Vị trí tuyển dụng</th>
                         <th scope="col">View</th>
-                        <th scope="col">Ngày cập nhật</th>
+                        <th scope="col">Ngày tạo</th>
                         <th scope="col">Trạng thái</th>
+                        <th scope="col">Đẩy tin</th>
                         <th scope="col">Tùy chỉnh</th>
                     </tr>
                 </thead>
@@ -22,10 +23,15 @@
                             <td><a href="{{ route('employer.job.edit', ['slug' => $item->slug, 'id' => $item->id]) }}"
                                     title="Chỉnh sửa hồ sơ {{ $item->vi_tri }}">{{ $item->vi_tri }}</a></td>
                             <td>{{ $item->view }}</td>
-                            <td>{{ Helper::formatDate($item->updated_at) }}</td>
+                            <td>{{ Helper::formatDate($item->created_at) }}</td>
                             <td><span id="badge_{{ $item->id }}"
                                     class="badge {{ $item->status == 1 ? 'bg-success' : 'bg-dark' }}"
                                     data-status="{{ $item->id }}">Hiển thị</span></td>
+                            <td>
+                                @can('push_news')
+                                    <a href="{{route('service.push.news')}}" class="btn btn-outline-success btn-sm">Đẩy tin 2/2</a>
+                                @endcan
+                            </td>
                             <td>
                                 <div class="btn-group">
                                     <button class="btn btn-secondary btn-sm dropdown-toggle" type="button"
